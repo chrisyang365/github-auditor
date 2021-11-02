@@ -31,3 +31,4 @@ rails db:setup
 ```
 rails server
 ```
+Your local dev app should now be viewable at http://127.0.0.1:3000/
