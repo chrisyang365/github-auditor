@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
   root 'homepage#index'
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+  #api endpoints here
+  namespace :api do
+    resources 'auth', only: [:create]
+  end
+  get '*path', to: 'homepage#index'
 end
