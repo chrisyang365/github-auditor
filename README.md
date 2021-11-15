@@ -1,7 +1,7 @@
 # Github Auditor
 
 ### Prerequisites
-- [Node.js](https://nodejs.org/en/) and [npm](https://www.npmjs.com/)
+- [Node.js](https://nodejs.org/en/) and [npm](https://www.npmjs.com/) (make sure your node.js version is 16.13.0 (LTS))
 - [Yarn](https://classic.yarnpkg.com/en/docs/install#debian-stable)
 - [Ruby on Rails](https://guides.rubyonrails.org/getting_started.html)
 - [PostgreSQL](https://www.postgresql.org/download/)
