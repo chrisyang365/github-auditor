@@ -3,7 +3,7 @@ import { Redirect } from "react-router-dom";
 import { AuthContext } from "./App";
 import GithubButton from 'react-github-login-button';
 import { Dimmer, Loader } from 'semantic-ui-react';
-
+import axios from 'axios';
 
 export default function Login() {
   const { state, dispatch } = useContext(AuthContext);
@@ -29,23 +29,19 @@ export default function Login() {
       const proxy_url = state.proxy_url;
 
       // Use code parameter and other parameters to make POST request to proxy_server
-      fetch(proxy_url, {
-        method: "POST",
-        body: JSON.stringify(requestData)
-      })
-        .then(response => response.json())
-        .then(data => {
+      axios.post(proxy_url, requestData)
+        .then((res) => {
           dispatch({
             type: "LOGIN",
-            payload: { user: data, isLoggedIn: true }
+            payload: { user: res.data, isLoggedIn: true }
           });
         })
-        .catch(error => {
+        .catch((error) => {
           setData({
             isLoading: false,
             errorMessage: "Sorry! Login failed"
           });
-        });
+        })
     }
   }, [state, dispatch, data]);
 

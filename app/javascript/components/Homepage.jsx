@@ -1,13 +1,14 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Redirect } from "react-router-dom";
 import { AuthContext } from "./App";
-import { Card, Dimmer, Image, Loader, Menu, Segment } from 'semantic-ui-react'
+import { Card, Dimmer, Header, Image, Loader, Menu, Segment } from 'semantic-ui-react'
+import axios from 'axios';
 
 function Homepage(props) {
     const { state, dispatch } = useContext(AuthContext);
     const [activeItem, setActiveItem] = useState('profile');
     const [isLoaded, setIsLoaded] = useState(false);
-    const [orgData, setOrgData] = useState({});
+    const [orgData, setOrgData] = useState([]);
 
     const handleLogout = () => {
         dispatch({
@@ -18,24 +19,26 @@ function Homepage(props) {
     useEffect(() => {
         if (!isLoaded) {
             const access_token = state.user.access_token;
-            fetch("https://api.github.com/user/orgs", {
-                method: "GET",
+            axios.get("https://api.github.com/user/orgs", {
                 headers: {
-                'Authorization': `token ${access_token}`
+                    'Authorization': `token ${access_token}`
                 }
             })
-            .then(response => response.json())
-            .then(data => {
-                setOrgData(data);
+            .then((res) => {
+                setOrgData(res.data);
                 setIsLoaded(true);
-            });
+            })
+            .catch((error) => {
+                console.log(error);
+                setIsLoaded(true);
+            })
         }
-    }, [isLoaded])
+    }, [isLoaded, orgData])
 
     return (
         <div>
             {state.isLoggedIn ? (
-                <div>
+                <>
                     <Segment inverted>
                         <Menu inverted pointing secondary>
                             <Menu.Item
@@ -66,34 +69,42 @@ function Homepage(props) {
                         <h1>Welcome {state.user.username}!</h1>
                     )}
                     {activeItem === 'organizations' && (
-                        <div>
+                        <>
                             {isLoaded ? (
-                                <Card.Group centered>
-                                    {orgData.map((org) => {
-                                        return (
-                                            <Card link>
-                                                <Image src={org.avatar_url} wrapped ui={false} />
-                                                <Card.Content>
-                                                    <Card.Header>{org.login}</Card.Header>
-                                                    <Card.Description>
-                                                        {org.description}
-                                                    </Card.Description>
-                                                </Card.Content>
-                                            </Card>
-                                        )
-                                    })}
-                                </Card.Group>
+                                <>
+                                    {orgData.length > 0 ? (
+                                        <Card.Group centered>
+                                            {orgData.map((org) => {
+                                                return (
+                                                    <Card link>
+                                                        <Image src={org.avatar_url} wrapped ui={false} />
+                                                        <Card.Content>
+                                                            <Card.Header>{org.login}</Card.Header>
+                                                            <Card.Description>
+                                                                {org.description}
+                                                            </Card.Description>
+                                                        </Card.Content>
+                                                    </Card>
+                                                )
+                                            })}
+                                        </Card.Group>
+                                    ) : (
+                                        <Header as='h2' textAlign='center' disabled>
+                                            No authorized GitHub organizations are associated with this account.
+                                        </Header>
+                                    )}
+                                </>
                             ) : (
                                 <Dimmer active>
                                     <Loader>Loading</Loader>
                                 </Dimmer>
                             )}
-                        </div>
+                        </>
                     )}
                     {activeItem === 'repositories' && (
                         <h1>Repositories</h1>
                     )}
-                </div>
+                </>
             ) : (
                 <Redirect to="/login" />
             )}
