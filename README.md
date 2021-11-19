@@ -32,3 +32,14 @@ rails db:setup
 rails server
 ```
 Your local dev app should now be viewable at http://127.0.0.1:3000/
+
+### Miscellaneous
+- Running the following command will allow you to enter the Rails console and interact with the database via [ActiveRecord](https://guides.rubyonrails.org/active_record_basics.html):
+```
+rails console
+```
+- Whenever there are changes to the model, make sure you run the following to ensure you have the latest schema version:
+```
+rails db:schema:load
+```
+NOTE: if you have any preexisting data in your database, running this command will also wipe all that data
