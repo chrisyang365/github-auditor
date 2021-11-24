@@ -12,7 +12,7 @@ export default function Organization(){
     const [orgData, setOrgData] = useState([]);
 
     useEffect(() => {
-        if (!isLoaded) {
+        if (!isLoaded && state.isLoggedIn) {
             const access_token = state.user.access_token;
             axios.get("https://api.github.com/user/orgs", {
                 headers: {
