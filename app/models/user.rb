@@ -1,5 +1,7 @@
 class User < ApplicationRecord
-  validates :login, presence: true
-  validates :avatar_url, presence: true
-  belongs_to :organization
+  validates: :access_token, presence: true
+  validates: :name, presence: true
+  
+  has_many :user_org_tables
+  has_many :organizations, through: :user_org_tables
 end
