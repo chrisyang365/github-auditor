@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Redirect } from "react-router-dom";
-import { AuthContext } from "./App";
+import { AuthContext } from "../App";
 import GithubButton from 'react-github-login-button';
 import { Dimmer, Loader } from 'semantic-ui-react';
 import axios from 'axios';
