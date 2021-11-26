@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { AuthContext } from "../App";
-import { Menu, Segment } from 'semantic-ui-react'
+import { Menu, Segment } from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
 
 export default function NavBar(){
     const { dispatch } = useContext(AuthContext);
@@ -16,14 +17,18 @@ export default function NavBar(){
         <Menu inverted pointing secondary>
             <Menu.Item
                 name='profile'
-                href = '/'
+                as={Link}
+                to={'/'}
             />
             <Menu.Item
                 name='organizations'
-                href = '/orgs'
+                as={Link}
+                to={'/orgs'}
             />
             <Menu.Item
                 name='repositories'
+                as={Link}
+                to={'/'}
             />
             <Menu.Menu position='right'>
                 <Menu.Item
