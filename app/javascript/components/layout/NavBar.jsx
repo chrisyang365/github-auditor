@@ -25,11 +25,6 @@ export default function NavBar(){
                 as={Link}
                 to={'/orgs'}
             />
-            <Menu.Item
-                name='repositories'
-                as={Link}
-                to={'/'}
-            />
             <Menu.Menu position='right'>
                 <Menu.Item
                 name='logout'
