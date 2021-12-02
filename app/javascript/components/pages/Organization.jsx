@@ -32,7 +32,6 @@ export default function Organization(){
                 })
                 orgData.push({...org, twoFA: res.data.two_factor_requirement_enabled})
             }
-            console.log(orgData)
             setOrgData(orgData);
             setIsLoaded(true);
         };
