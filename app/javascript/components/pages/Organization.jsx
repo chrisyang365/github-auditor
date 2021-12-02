@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Link, Redirect } from "react-router-dom";
-import { Card, Dimmer, Header, Image, Loader } from 'semantic-ui-react'
+import { Card, Dimmer, Header, Icon, Image, Loader } from 'semantic-ui-react'
 import axios from 'axios';
 import { AuthContext } from "../App";
-import NavBar from "../layout/NavBar"
+import NavBar from "../layout/NavBar";
+import plusminus from "../../../assets/images/plusminus.png";
 
 export default function Organization(){
 
@@ -14,22 +15,29 @@ export default function Organization(){
     const [clickedOrg, setClickedOrg] = useState(null);
 
     useEffect(() => {
-        if (!isLoaded && state.isLoggedIn) {
-            const access_token = state.user.access_token;
-            axios.get("https://api.github.com/user/orgs", {
-            // axios.get("api/organizations/", {
+        const access_token = state.user.access_token;
+        const fetchData = async () => {
+            const orgsData = await axios.get("https://api.github.com/user/orgs", {
                 headers: {
                     'Authorization': `token ${access_token}`
                 }
-            })
-            .then((res) => {
-                setOrgData(res.data);
-                setIsLoaded(true);
-            })
-            .catch((error) => {
-                console.log(error);
-                setIsLoaded(true);
-            })
+            });
+
+            const orgData = []
+            for (const org of orgsData.data) {
+                const res = await axios.get(`https://api.github.com/orgs/${org.login}`, {
+                    headers: {
+                        'Authorization': `token ${access_token}`
+                    }
+                })
+                orgData.push({...org, twoFA: res.data.two_factor_requirement_enabled})
+            }
+            console.log(orgData)
+            setOrgData(orgData);
+            setIsLoaded(true);
+        };
+        if (!isLoaded && state.isLoggedIn) {
+            fetchData();
         }
     }, [isLoaded, orgData])
 
@@ -63,15 +71,22 @@ export default function Organization(){
                                                 <Card.Content>
                                                     <Card.Header>{org.login}</Card.Header>
                                                     <Card.Description>
-                                                        {org.description}
+                                                        {org.twoFA === true ? (
+                                                            <p style={{ color: "green"}}>Two-factor Authentication is enabled</p>
+                                                        ) : (
+                                                            <p style={{ color: "red"}}>Two-factor Authentication is not enabled</p>
+                                                        )}
                                                     </Card.Description>
                                                 </Card.Content>
                                             </Card>
                                         )
                                     })}
                                     <Card link href={`https://github.com/settings/connections/applications/${state.client_id}`} target="_blank">
+                                        <Image src={plusminus} wrapped ui={false} />
                                         <Card.Content>
-                                            <Card.Header>larry</Card.Header>
+                                            <Card.Header>
+                                                Manage organizations access
+                                            </Card.Header>
                                         </Card.Content>
                                     </Card>
                                 </Card.Group>
