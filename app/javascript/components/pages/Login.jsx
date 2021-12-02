@@ -66,7 +66,7 @@ export default function Login() {
             }
             <a
               className="login-link"
-              href={`https://github.com/login/oauth/authorize?scope=user&client_id=${client_id}&redirect_uri=${redirect_uri}`}
+              href={`https://github.com/login/oauth/authorize?scope=user&client_id=${client_id}&redirect_uri=${redirect_uri}&scope=repo`}
               onClick={() => {
                 setData({ ...data, errorMessage: "" });
               }}
