@@ -13,7 +13,7 @@ export default function NavBar(){
     }
     
     return (
-    <Segment inverted>
+    <Segment inverted attached='bottom'>
         <Menu inverted pointing secondary>
             <Menu.Item
                 name='profile'

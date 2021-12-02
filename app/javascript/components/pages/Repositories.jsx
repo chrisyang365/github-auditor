@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Redirect, Link, useLocation } from "react-router-dom";
-import { Card, Dimmer, Header, Image, Loader } from 'semantic-ui-react'
+import { Card, Dimmer, Header, Image, Loader, Message, Icon } from 'semantic-ui-react'
 import axios from 'axios';
 import { AuthContext } from "../App";
 import NavBar from "../layout/NavBar"
@@ -13,7 +13,30 @@ export default function Repositories(props){
     const [redirect, setRedirect] = useState(false);
     const [clickedRepo, setClickedRepo] = useState(null);
     const location = useLocation()
-    const { orgName } = location.state
+    const { orgName, org } = location.state
+    const issueMessages = Object.entries(org.issues).map(obj => {
+        const issueKey = obj[0];
+        const issueValue = obj[1];
+        if (issueValue) {
+            return null;
+        }
+        else {
+            switch (issueKey) {
+                case 'twoFA':
+                    return <Message.Item>The <a href={`https://github.com/organizations/${orgName}/settings/security`} target="_blank" rel="noreferrer noopener">two-factor authentication requirement</a> is not enabled.</Message.Item>;
+                case 'noOutsideContribs':
+                    return <Message.Item content="The organization has outside contributors." />;
+                case 'dependabot':
+                    return <Message.Item content="There are Dependabot alerts." />;
+                case 'PRsHaveReviewers':
+                    return <Message.Item content="One or more pull requests lack assigned reviewers." />;
+                case 'freeOfSensitive':
+                    return <Message.Item content="Sensitive information was detected in the code." />;
+                default:
+                    return null;
+            }
+        }
+    })
 
     useEffect(() => {
         if (!isLoaded && state.isLoggedIn) {
@@ -54,6 +77,26 @@ export default function Repositories(props){
                 <NavBar />
                     {isLoaded ? (
                         <>
+                        {/* { Object.keys(org.issues).forEach(k => {
+                            if (org.issues[k]) {
+                                switch (k) {
+                                    case 'twoFA':
+                                        <> */}
+                                        <Message warning>
+                                            <Message.Header>
+                                                <Icon name='warning sign' />
+                                                The organization {orgName} has the following security issues:
+                                            </Message.Header>
+                                            <Message.List>
+                                                {issueMessages.map(i => i ? i : null)}
+                                            </Message.List>
+                                        </Message>
+                                        {/* </>
+                                }
+                            }
+                        })
+
+                        } */}
                             {repoData.length > 0 ? (
                                 <Card.Group centered>
                                     {repoData
