@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Link, Redirect } from "react-router-dom";
-import { Card, Dimmer, Header, Image, Loader } from 'semantic-ui-react'
+import { Card, Dimmer, Header, Image, Loader, Label, Icon } from 'semantic-ui-react'
 import axios from 'axios';
 import { AuthContext } from "../App";
 import NavBar from "../layout/NavBar"
@@ -59,9 +59,9 @@ export default function Organization(){
                                                 }}
                                                 // to={'/orgs/' + org.login + '/repos'}
                                             >
-                                                <Image src={org.avatar_url} wrapped ui={false} />
+                                                {/* <Image src={org.avatar_url} wrapped ui={false} /> */}
                                                 <Card.Content>
-                                                    <Card.Header>{org.login}</Card.Header>
+                                                    <Label image horizontal size='large' style={{ marginBottom: "1em" }}><Image style={{ marginTop: "0.25em", marginBottom: "0.25em" }} src={org.avatar_url} />{org.name ? org.name : org.login}</Label>
                                                     <Card.Description>
                                                         {org.description}
                                                     </Card.Description>
@@ -71,7 +71,7 @@ export default function Organization(){
                                     })}
                                     <Card link href={`https://github.com/settings/connections/applications/${state.client_id}`} target="_blank">
                                         <Card.Content>
-                                            <Card.Header>larry</Card.Header>
+                                            <Label size='large' style={{ marginBottom: "1em" }}><Icon name='settings' style={{ marginTop: "0.25em", marginBottom: "0.25em" }} />Manage Access</Label>
                                         </Card.Content>
                                     </Card>
                                 </Card.Group>
