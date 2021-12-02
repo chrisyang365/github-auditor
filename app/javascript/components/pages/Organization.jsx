@@ -30,7 +30,31 @@ export default function Organization(){
                         'Authorization': `token ${access_token}`
                     }
                 })
-                orgData.push({...org, name: res.data.name, twoFA: res.data.two_factor_requirement_enabled})
+                // uncomment
+                //orgData.push({...org, name: res.data.name, twoFA: res.data.two_factor_requirement_enabled})
+                // hard code for DEMO-- remove later
+                switch (org.login) {
+                    case 'Xenon-UCSB':
+                        orgData.push({ ...org, twoFA: true, noOutsideContribs: true, dependabot: false, PRsHaveReviewers: true, freeOfSensitive: true });
+                        break;
+                    case 'cs-189a-test-organization-1':
+                        orgData.push({ ...org, twoFA: true, noOutsideContribs: false, dependabot: false, PRsHaveReviewers: true, freeOfSensitive: false });
+                        break;
+                    case 'cs-189a-test-organization-2':
+                        orgData.push({ ...org, twoFA: false, noOutsideContribs: true, dependabot: true, PRsHaveReviewers: true, freeOfSensitive: true });
+                        break;
+                    case 'cs-189a-test-organization-3':
+                        orgData.push({ ...org, twoFA: true, noOutsideContribs: true, dependabot: false, PRsHaveReviewers: false, freeOfSensitive: true });
+                        break;
+                    case 'cs-189a-test-organization-4':
+                        orgData.push({ ...org, twoFA: true, noOutsideContribs: false, dependabot: true, PRsHaveReviewers: true, freeOfSensitive: true });
+                        break;
+                    case 'cs-189a-test-organization-5':
+                        orgData.push({ ...org, twoFA: false, noOutsideContribs: false, dependabot: false, PRsHaveReviewers: false, freeOfSensitive: false });
+                        break;
+                    default:
+
+                }
             }
             setOrgData(orgData);
             setIsLoaded(true);
@@ -70,19 +94,39 @@ export default function Organization(){
                                             >
                                                 {/* <Image src={org.avatar_url} wrapped ui={false} /> */}
                                                 <Card.Content>
-                                                    <Label image size='large' style={{ marginBottom: "1em" }}><Image style={{ marginTop: "0.25em", marginBottom: "0.25em" }} src={org.avatar_url} />{org.name ? org.name : org.login}</Label>
+                                                    <Label image size='large' color='black' style={{ marginBottom: "1em" }}>
+                                                        <Image avatar style={{ marginLeft: "0.25em", marginTop: "0.25em", marginBottom: "0.25em" }} src={org.avatar_url} />{org.name ? org.name : org.login}
+                                                    </Label>
                                                     <Card.Description>
                                                         <Label.Group size='medium'>
                                                             <Label>
-                                                                <Icon color={getIconColor(org.twoFA)} name={getIconName(org.twoFA)} />
+                                                                2FA Requirement
                                                                 <Label.Detail>
-                                                                    2FA Requirement
+                                                                    <Icon color={getIconColor(org.twoFA)} name={getIconName(org.twoFA)} />
                                                                 </Label.Detail>
                                                             </Label>
                                                             <Label>
-                                                                <Icon color={getIconColor(true)} name={getIconName(true)} />
+                                                                No Outside Contributors
                                                                 <Label.Detail>
-                                                                    Dependabot Alerts
+                                                                    <Icon color={getIconColor(org.noOutsideContribs)} name={getIconName(org.noOutsideContribs)} />
+                                                                </Label.Detail>
+                                                            </Label>
+                                                            <Label>
+                                                                Dependabot Alerts
+                                                                <Label.Detail>
+                                                                    <Icon color={getIconColor(org.dependabot)} name={getIconName(org.dependabot)} />
+                                                                </Label.Detail>
+                                                            </Label>
+                                                            <Label>
+                                                                All PRs Have Reviewers
+                                                                <Label.Detail>
+                                                                    <Icon color={getIconColor(org.PRsHaveReviewers)} name={getIconName(org.PRsHaveReviewers)} />
+                                                                </Label.Detail>
+                                                            </Label>
+                                                            <Label>
+                                                                Free of Sensitive Info
+                                                                <Label.Detail>
+                                                                    <Icon color={getIconColor(org.freeOfSensitive)} name={getIconName(org.freeOfSensitive)} />
                                                                 </Label.Detail>
                                                             </Label>
                                                         </Label.Group>
@@ -93,7 +137,7 @@ export default function Organization(){
                                     })}
                                     <Card link href={`https://github.com/settings/connections/applications/${state.client_id}`} target="_blank">
                                         <Card.Content>
-                                            <Label image size='large' style={{ marginBottom: "1em" }}><Image style={{ marginTop: "0.25em", marginBottom: "0.25em" }} src={plusminus} />Manage Organization Access</Label>
+                                            <Label image size='large' style={{ marginBottom: "1em" }}><Image  style={{ marginLeft: "0.25em", marginTop: "0.25em", marginBottom: "0.25em" }} src={plusminus} />Manage Organization Access</Label>
                                         </Card.Content>
                                     </Card>
                                 </Card.Group>
