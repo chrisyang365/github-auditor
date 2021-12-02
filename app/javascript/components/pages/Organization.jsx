@@ -3,7 +3,8 @@ import { Link, Redirect } from "react-router-dom";
 import { Card, Dimmer, Header, Image, Loader, Label, Icon } from 'semantic-ui-react'
 import axios from 'axios';
 import { AuthContext } from "../App";
-import NavBar from "../layout/NavBar"
+import NavBar from "../layout/NavBar";
+import plusminus from "../../../assets/images/plusminus.png";
 
 export default function Organization(){
 
@@ -14,22 +15,28 @@ export default function Organization(){
     const [clickedOrg, setClickedOrg] = useState(null);
 
     useEffect(() => {
-        if (!isLoaded && state.isLoggedIn) {
-            const access_token = state.user.access_token;
-            axios.get("https://api.github.com/user/orgs", {
-            // axios.get("api/organizations/", {
+        const access_token = state.user.access_token;
+        const fetchData = async () => {
+            const orgsData = await axios.get("https://api.github.com/user/orgs", {
                 headers: {
                     'Authorization': `token ${access_token}`
                 }
-            })
-            .then((res) => {
-                setOrgData(res.data);
-                setIsLoaded(true);
-            })
-            .catch((error) => {
-                console.log(error);
-                setIsLoaded(true);
-            })
+            });
+
+            const orgData = []
+            for (const org of orgsData.data) {
+                const res = await axios.get(`https://api.github.com/orgs/${org.login}`, {
+                    headers: {
+                        'Authorization': `token ${access_token}`
+                    }
+                })
+                orgData.push({...org, twoFA: res.data.two_factor_requirement_enabled})
+            }
+            setOrgData(orgData);
+            setIsLoaded(true);
+        };
+        if (!isLoaded && state.isLoggedIn) {
+            fetchData();
         }
     }, [isLoaded, orgData])
 
@@ -61,9 +68,13 @@ export default function Organization(){
                                             >
                                                 {/* <Image src={org.avatar_url} wrapped ui={false} /> */}
                                                 <Card.Content>
-                                                    <Label image horizontal size='large' style={{ marginBottom: "1em" }}><Image style={{ marginTop: "0.25em", marginBottom: "0.25em" }} src={org.avatar_url} />{org.name ? org.name : org.login}</Label>
+                                                    <Label image size='large' style={{ marginBottom: "1em" }}><Image style={{ marginTop: "0.25em", marginBottom: "0.25em" }} src={org.avatar_url} />{org.name ? org.name : org.login}</Label>
                                                     <Card.Description>
-                                                        {org.description}
+                                                        {org.twoFA === true ? (
+                                                            <p style={{ color: "green"}}>Two-factor Authentication is enabled</p>
+                                                        ) : (
+                                                            <p style={{ color: "red"}}>Two-factor Authentication is not enabled</p>
+                                                        )}
                                                     </Card.Description>
                                                 </Card.Content>
                                             </Card>
@@ -71,7 +82,7 @@ export default function Organization(){
                                     })}
                                     <Card link href={`https://github.com/settings/connections/applications/${state.client_id}`} target="_blank">
                                         <Card.Content>
-                                            <Label size='large' style={{ marginBottom: "1em" }}><Icon name='settings' style={{ marginTop: "0.25em", marginBottom: "0.25em" }} />Manage Access</Label>
+                                            <Label image size='large' style={{ marginBottom: "1em" }}><Image style={{ marginTop: "0.25em", marginBottom: "0.25em" }} src={plusminus} />Manage Organization Access</Label>
                                         </Card.Content>
                                     </Card>
                                 </Card.Group>
