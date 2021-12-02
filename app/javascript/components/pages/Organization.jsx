@@ -30,7 +30,7 @@ export default function Organization(){
                         'Authorization': `token ${access_token}`
                     }
                 })
-                orgData.push({...org, twoFA: res.data.two_factor_requirement_enabled})
+                orgData.push({...org, name: res.data.name, twoFA: res.data.two_factor_requirement_enabled})
             }
             setOrgData(orgData);
             setIsLoaded(true);
@@ -57,6 +57,8 @@ export default function Organization(){
                             {orgData.length > 0 ? (
                                 <Card.Group centered>
                                     {orgData.map((org) => {
+                                        const getIconColor = enabled => enabled ? 'green' : 'red'
+                                        const getIconName = enabled => enabled ? 'check' : 'x'
                                         return (
                                             <Card 
                                                 link
@@ -70,11 +72,20 @@ export default function Organization(){
                                                 <Card.Content>
                                                     <Label image size='large' style={{ marginBottom: "1em" }}><Image style={{ marginTop: "0.25em", marginBottom: "0.25em" }} src={org.avatar_url} />{org.name ? org.name : org.login}</Label>
                                                     <Card.Description>
-                                                        {org.twoFA === true ? (
-                                                            <p style={{ color: "green"}}>Two-factor Authentication is enabled</p>
-                                                        ) : (
-                                                            <p style={{ color: "red"}}>Two-factor Authentication is not enabled</p>
-                                                        )}
+                                                        <Label.Group size='medium'>
+                                                            <Label>
+                                                                <Icon color={getIconColor(org.twoFA)} name={getIconName(org.twoFA)} />
+                                                                <Label.Detail>
+                                                                    2FA Requirement
+                                                                </Label.Detail>
+                                                            </Label>
+                                                            <Label>
+                                                                <Icon color={getIconColor(true)} name={getIconName(true)} />
+                                                                <Label.Detail>
+                                                                    Dependabot Alerts
+                                                                </Label.Detail>
+                                                            </Label>
+                                                        </Label.Group>
                                                     </Card.Description>
                                                 </Card.Content>
                                             </Card>
