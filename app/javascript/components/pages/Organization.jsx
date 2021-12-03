@@ -140,7 +140,7 @@ export default function Organization(){
                                     })}
                                     <Card link href={`https://github.com/settings/connections/applications/${state.client_id}`} target="_blank" rel="noreferrer noopener">
                                         <Card.Content>
-                                            <Label image size='large' style={{ marginBottom: "1em" }}><Image  style={{ marginLeft: "0.25em", marginTop: "0.25em", marginBottom: "0.25em" }} src={plusminus} />Manage Organization Access</Label>
+                                            <Label image size='large' style={{ marginBottom: "1em" }}><Image  style={{ padding: "0.25em" }} src={plusminus} />Manage Organization Access</Label>
                                         </Card.Content>
                                     </Card>
                                 </Card.Group>
