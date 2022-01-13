@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   #api endpoints here
   namespace :api do
     resources 'auth', only: [:create]
-    get 'organizations/:access_token', to: 'auth#organizations'
+    get 'organizations', to: 'orgs#get'
   end
   get '*path', to: 'homepage#index'
 end
