@@ -1,5 +1,5 @@
 class Api::AuthController < ApplicationController
-  skip_before_action :verify_authenticity_token
+  skip_before_action :authorized
 
   def create
     client_id = ENV['REACT_APP_CLIENT_ID']
