@@ -22,7 +22,7 @@ class Api::AuthController < ApplicationController
     existing_user = User.where(login: user_obj['login']).first
 
     if existing_user.nil?
-      User.create(access_token: access_token, login: user_obj['login'], name: user_obj['name'])
+      GithubAuditJob.perform_later(access_token, user_obj['login'], user_obj['name'])
     else
       User.update(access_token: access_token, login: user_obj['login'], name: user_obj['name'])
     end
