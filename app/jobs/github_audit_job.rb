@@ -36,9 +36,24 @@ class GithubAuditJob < ApplicationJob
         end
         org_json = JSON.parse(org_res.body)
 
+        #We can only audit orgs that loggged in user is an admin for
         if !org_json['two_factor_requirement_enabled'].nil?
           new_org = Organization.create(name: org_name, avatar_url: org_json['avatar_url'], two_factor_requirement_enabled: org_json['two_factor_requirement_enabled'])
           user_orgs.append(new_org)
+
+          #Get all the repos under each org
+          repos_uri = URI.parse('https://api.github.com/orgs/' + org_name + '/repos')
+          repos_req = Net::HTTP::Get.new(repos_uri)
+          repos_req['Authorization'] = 'token ' + access_token
+          repos_res = Net::HTTP.start(repos_uri.hostname, repos_uri.port, :use_ssl => repos_uri.scheme == 'https') do |http|
+            http.request(repos_req)
+          end
+          repos_json = JSON.parse(repos_res.body)
+
+          repos_json.each do |repo|
+            new_repo = Repository.create(name: repo['full_name'], organization: new_org)
+          end
+
         end
       else
         user_orgs.append(Organization.find(name: org_name))
