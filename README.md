@@ -5,6 +5,7 @@
 - [Yarn](https://classic.yarnpkg.com/en/docs/install#debian-stable)
 - [Ruby on Rails](https://guides.rubyonrails.org/getting_started.html)
 - [PostgreSQL](https://www.postgresql.org/download/)
+- [Redis](https://redis.io/topics/quickstart)
 
 ### 1. Enter PostgreSQL console
 ```
@@ -27,7 +28,16 @@ ALTER ROLE
 rails db:setup
 ```
 
-### 4. Start up the rails server
+### 4. Start up the Redis server in order to run background tasks
+```
+redis-server
+```
+### 5. Start up a Resque worker to process background tasks on local machine
+```
+QUEUE=* rake resque:work
+```
+
+### 6. Start up the rails server
 ```
 rails server
 ```
