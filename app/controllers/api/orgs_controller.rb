@@ -1,5 +1,5 @@
 class Api::OrgsController < ApplicationController
-  def get
+  def index
     render json: { organizations: @user.organizations }, status: :ok
   end
 end

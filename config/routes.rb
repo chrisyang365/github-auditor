@@ -5,7 +5,9 @@ Rails.application.routes.draw do
   #api endpoints here
   namespace :api do
     resources 'auth', only: [:create]
-    get 'orgs', to: 'orgs#get'
+    resources 'orgs', only: [:index] do
+      get 'repos', to: 'repos#index'
+    end
   end
   #Resque server here
   mount Resque::Server.new, at: '/jobs'
