@@ -54,6 +54,16 @@ class GithubAuditJob < ApplicationJob
             new_repo = Repository.create(name: repo['full_name'], organization: new_org)
           end
 
+          #Enable webhooks for org
+          webhooks_uri = URI('https://api.github.com/orgs/' + org_name + '/hooks')
+          webhooks_req = Net::HTTP::Post.new(webhooks_uri, 'Content-Type' => 'application/json')
+          webhooks_req['Authorization'] = 'token ' + access_token
+          webhook_events = ['code_scanning_alert', 'member', 'repository', 'repository_vulnerability_alert', 'secret_scanning_alert']
+          webhook_config = { url: 'https://github-auditor.herokuapp.com/api/webhooks', content_type: 'json' }
+          webhooks_req.body = { name: 'web', config: webhook_config, events: webhook_events }.to_json
+          webhook_res = Net::HTTP.start(webhooks_uri.hostname, webhooks_uri.port, :use_ssl => repos_uri.scheme == 'https') do |http|
+            http.request(webhooks_req)
+          end
         end
       else
         user_orgs.append(Organization.find(name: org_name))

@@ -6,8 +6,11 @@ Rails.application.routes.draw do
   namespace :api do
     resources 'auth', only: [:create]
     resources 'orgs', only: [:index] do
-      get 'repos', to: 'repos#index'
+      resources 'repos', only: [:index] do
+        get 'dependabotalerts', to: 'dependabot_alert#get'
+      end
     end
+    resources 'webhooks', only: [:create]
   end
   #Resque server here
   mount Resque::Server.new, at: '/jobs'
