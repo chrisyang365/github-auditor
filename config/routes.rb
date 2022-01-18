@@ -7,6 +7,7 @@ Rails.application.routes.draw do
     resources 'auth', only: [:create]
     resources 'webhooks', only: [:create]
     get 'orgs', to: 'orgs#get'
+    get 'orgs/:org_id/repos/:repo_id/dependabotalerts', to: 'dependabot_alert#get'
   end
   #Resque server here
   mount Resque::Server.new, at: '/jobs'
