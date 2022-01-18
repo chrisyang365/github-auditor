@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   #api endpoints here
   namespace :api do
     resources 'auth', only: [:create]
+    resources 'webhooks', only: [:create]
     get 'orgs', to: 'orgs#get'
   end
   #Resque server here

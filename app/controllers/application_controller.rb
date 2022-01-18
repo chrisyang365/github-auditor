@@ -7,8 +7,8 @@ class ApplicationController < ActionController::Base
   end
 
   def current_user
-    token = auth_header.split(' ')[1]
-    if token
+    if auth_header
+      token = auth_header.split(' ')[1]
       @user = User.find_by(access_token: token)
     else
       nil
