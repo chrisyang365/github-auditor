@@ -60,4 +60,5 @@ ActiveRecord::Schema.define(version: 2022_01_18_215948) do
     t.string "login"
   end
 
+  add_foreign_key "dependabot_alerts", "repositories"
 end
