@@ -11,7 +11,7 @@ class Api::DependabotAlertController < ApplicationController
   #
   # last line checks for ORG_ID NOT NAME,
   def check_org_and_repo?
-    @repository = Repository.find_by(name: params[:repo_id])
+    @repository = Repository.find_by(name: params[:org_id] + '/' + params[:repo_id])
     @organization = Organization.find_by(name: params[:org_id])
 
     !(@repository.nil? || 
