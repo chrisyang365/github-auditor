@@ -18,15 +18,14 @@ export default function Repositories(props){
     useEffect(() => {
         if (!isLoaded && state.isLoggedIn) {
             const access_token = state.user.access_token;
-            const url = "https://api.github.com/orgs/" 
-                + orgName + "/repos";
+            const url = "/api/orgs/" + orgName + "/repos";
             axios.get(url, {
                 headers: {
                     'Authorization': `token ${access_token}`
                 }
             })
             .then((res) => {
-                setRepoData(res.data);
+                setRepoData(res.data['repositories']);
                 setIsLoaded(true);
             })
             .catch((error) => {
