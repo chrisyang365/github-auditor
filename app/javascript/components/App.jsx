@@ -1,8 +1,12 @@
 import React, { createContext, useReducer } from 'react';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import Homepage from "./Homepage";
-import Login from "./Login";
+import Homepage from "./pages/Homepage";
+import Login from "./pages/Login";
+import Organization from "./pages/Organization"
+import Repositories from './pages/Repositories';
+import Repository from './pages/Repository';
 import { initialState, reducer } from "../store/reducer";
+import NavBar from './layout/NavBar';
 
 
 export const AuthContext = createContext();
@@ -17,10 +21,14 @@ function App() {
         dispatch
       }}
     >
+    
     <Router>
       <Switch>
+        <Route path="/orgs" exact component={Organization}/>
+        <Route path="/orgs/:name/repos" exact component={Repositories}/>
+        <Route path="/orgs/:name/repos/:repo" exact component={Repository}/>
         <Route path="/login" component={Login}/>
-        <Route path="/" component={Homepage}/>
+        <Route path="/" exact component={Homepage}/>
       </Switch>
     </Router>
     </AuthContext.Provider>

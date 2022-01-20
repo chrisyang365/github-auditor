@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Redirect } from "react-router-dom";
-import { AuthContext } from "./App";
+import { AuthContext } from "../App";
 import GithubButton from 'react-github-login-button';
 import { Dimmer, Loader } from 'semantic-ui-react';
 import axios from 'axios';
@@ -66,7 +66,7 @@ export default function Login() {
             }
             <a
               className="login-link"
-              href={`https://github.com/login/oauth/authorize?scope=user&client_id=${client_id}&redirect_uri=${redirect_uri}`}
+              href={`https://github.com/login/oauth/authorize?scope=user%20admin:org%20security_events%20repo%20admin:org_hook&client_id=${client_id}&redirect_uri=${redirect_uri}`}
               onClick={() => {
                 setData({ ...data, errorMessage: "" });
               }}

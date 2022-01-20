@@ -1,10 +1,11 @@
 # Github Auditor
 
 ### Prerequisites
-- [Node.js](https://nodejs.org/en/) and [npm](https://www.npmjs.com/)
+- [Node.js](https://nodejs.org/en/) and [npm](https://www.npmjs.com/) (make sure your node.js version is 16.13.0 (LTS))
 - [Yarn](https://classic.yarnpkg.com/en/docs/install#debian-stable)
 - [Ruby on Rails](https://guides.rubyonrails.org/getting_started.html)
 - [PostgreSQL](https://www.postgresql.org/download/)
+- [Redis](https://redis.io/topics/quickstart)
 
 ### 1. Enter PostgreSQL console
 ```
@@ -27,8 +28,28 @@ ALTER ROLE
 rails db:setup
 ```
 
-### 4. Start up the rails server
+### 4. Start up the Redis server in order to run background tasks
+```
+redis-server
+```
+### 5. Start up a Resque worker to process background tasks on local machine
+```
+QUEUE=* rake resque:work
+```
+
+### 6. Start up the rails server
 ```
 rails server
 ```
 Your local dev app should now be viewable at http://127.0.0.1:3000/
+
+### Miscellaneous
+- Running the following command will allow you to enter the Rails console and interact with the database via [ActiveRecord](https://guides.rubyonrails.org/active_record_basics.html):
+```
+rails console
+```
+- Whenever there are changes to the model, make sure you run the following to ensure you have the latest schema version:
+```
+rails db:schema:load
+```
+NOTE: if you have any preexisting data in your database, running this command will also wipe all that data

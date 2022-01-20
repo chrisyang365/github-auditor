@@ -1,5 +1,5 @@
 class Api::AuthController < ApplicationController
-  skip_before_action :verify_authenticity_token
+  skip_before_action :authorized
 
   def create
     client_id = ENV['REACT_APP_CLIENT_ID']
@@ -18,7 +18,16 @@ class Api::AuthController < ApplicationController
       http.request(user_req)
     end
     user_obj = JSON.parse(user_res.body)
-    render json: { access_token: access_token, username: user_obj['name']}, status: :accepted
+
+    existing_user = User.where(login: user_obj['login']).first
+
+    if existing_user.nil?
+      GithubAuditJob.perform_later(access_token, user_obj['login'], user_obj['name'])
+    else
+      User.update(access_token: access_token, login: user_obj['login'], name: user_obj['name'])
+    end
+
+    render json: { access_token: access_token, login: user_obj['login'], username: user_obj['name']}, status: :accepted
   end
 
   def github_login_params
