@@ -24,7 +24,7 @@ export default function Organization(){
             });
 
             const orgData = [];
-            for (const org of orgsData.data.organizations) {
+            for (const org of orgsData.data) {
                 orgData.push({ ...org, twoFA: org.two_factor_requirement_enabled });
             }
             setOrgData(orgData);
