@@ -17,20 +17,15 @@ export default function Organization(){
     useEffect(() => {
         const access_token = state.user.access_token;
         const fetchData = async () => {
-            const orgsData = await axios.get("https://api.github.com/user/orgs", {
+            const orgsData = await axios.get("/api/orgs", {
                 headers: {
                     'Authorization': `token ${access_token}`
                 }
             });
 
-            const orgData = []
-            for (const org of orgsData.data) {
-                const res = await axios.get(`https://api.github.com/orgs/${org.login}`, {
-                    headers: {
-                        'Authorization': `token ${access_token}`
-                    }
-                })
-                orgData.push({...org, twoFA: res.data.two_factor_requirement_enabled})
+            const orgData = [];
+            for (const org of orgsData.data.organizations) {
+                orgData.push({ ...org, twoFA: org.two_factor_requirement_enabled });
             }
             setOrgData(orgData);
             setIsLoaded(true);
@@ -56,7 +51,7 @@ export default function Organization(){
                         <>
                             {orgData.length > 0 ? (
                                 <Card.Group centered>
-                                    {orgData.map((org) => {
+                                    {orgData.map((org, index) => {
                                         return (
                                             <Card 
                                                 link
@@ -65,6 +60,7 @@ export default function Organization(){
                                                     setRedirect(true);
                                                 }}
                                                 // to={'/orgs/' + org.login + '/repos'}
+                                                key={index}
                                             >
                                                 <Image src={org.avatar_url} wrapped ui={false} />
                                                 <Card.Content>
