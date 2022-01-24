@@ -1,0 +1,2 @@
+class CodeAlert < ApplicationRecord
+end
