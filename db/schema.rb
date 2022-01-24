@@ -20,7 +20,7 @@ ActiveRecord::Schema.define(version: 2022_01_24_044612) do
     t.text "description"
     t.string "severity"
     t.string "status"
-    t.bigint "repository_id"
+    t.bigint "repository_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
