@@ -10,10 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_18_215948) do
+ActiveRecord::Schema.define(version: 2022_01_24_224351) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "code_alerts", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.string "severity"
+    t.string "status"
+    t.bigint "repository_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["repository_id"], name: "index_code_alerts_on_repository_id"
+  end
 
   create_table "dependabot_alerts", force: :cascade do |t|
     t.string "name"
@@ -60,5 +71,6 @@ ActiveRecord::Schema.define(version: 2022_01_18_215948) do
     t.string "login"
   end
 
+  add_foreign_key "code_alerts", "repositories"
   add_foreign_key "dependabot_alerts", "repositories"
 end
