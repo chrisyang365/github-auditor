@@ -5,7 +5,7 @@ class CreateCodeAlerts < ActiveRecord::Migration[6.1]
       t.text :description
       t.string :severity
       t.string :status
-      t.bigint :repository_id
+      t.references :repository, null: false, foreign_key: true
 
       t.timestamps
     end
