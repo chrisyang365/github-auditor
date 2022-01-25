@@ -12,11 +12,13 @@ export default function Repositories(props){
     const [repoData, setRepoData] = useState([]);
     const [redirect, setRedirect] = useState(false);
     const [clickedRepo, setClickedRepo] = useState(null);
-    const location = useLocation()
-    const { orgName } = location.state
+    const location = useLocation();
 
     useEffect(() => {
         if (!isLoaded && state.isLoggedIn) {
+            const orgName = location.pathname
+                            .split('/')
+                            .filter(name => name.length > 0)[1];
             const access_token = state.user.access_token;
             const url = "/api/orgs/" + orgName + "/repos";
             axios.get(url, {
@@ -40,11 +42,7 @@ export default function Repositories(props){
             {redirect ? (
                 <Redirect to={{
                     pathname: props.location.pathname + 
-                            "/" + clickedRepo.name,
-                    state: {
-                        repoName: clickedRepo.name,
-                        orgName: orgName
-                    }
+                            "/" + clickedRepo
                 }}/>
             ) : (
             <>
@@ -58,17 +56,18 @@ export default function Repositories(props){
                                     {repoData
                                     .sort((a,b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : -1)
                                     .map((repo) => {
+                                        let repoDisplayName = repo.name.split('/')[1]
                                         return (
                                             <Card 
                                                 link
                                                 onClick={(event,data) => {
-                                                    setClickedRepo(repo);
+                                                    setClickedRepo(repoDisplayName);
                                                     setRedirect(true);
                                                 }}
                                                 // to={'/orgs/' + repo.owner.login + '/repos/' + repo.name}
                                             >
                                                 <Card.Content>
-                                                    <Card.Header>{repo.name}</Card.Header>
+                                                    <Card.Header>{repoDisplayName}</Card.Header>
                                                     <Card.Description>
                                                         {repo.description ? repo.description : ""}
                                                     </Card.Description>

@@ -11,11 +11,16 @@ export default function Repositories(props){
     const [isLoaded, setIsLoaded] = useState(false);
     const [repoData, setRepoData] = useState([]);
     const location = useLocation()
-    const { orgName, repoName } = location.state
-
 
     useEffect(() => {
         if (!isLoaded && state.isLoggedIn) {
+            props.history.push()
+            let pathArr = location.pathname
+                        .split('/')
+                        .filter(name => name.length > 0)
+            pathArr.splice(2, 1)
+            pathArr.splice(0, 1)
+            const [orgName, repoName] = pathArr
             const access_token = state.user.access_token;
             const url = "https://api.github.com/repos/" +
                      orgName + "/" + repoName;
