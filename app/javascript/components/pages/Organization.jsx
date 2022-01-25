@@ -15,23 +15,17 @@ export default function Organization(){
     const [clickedOrg, setClickedOrg] = useState(null);
 
     useEffect(() => {
-        const access_token = state.user.access_token;
-        const fetchData = async () => {
-            const orgsData = await axios.get("/api/orgs", {
+        if (!isLoaded && state.isLoggedIn) {
+            const access_token = state.user.access_token;
+            axios.get("/api/orgs", {
                 headers: {
                     'Authorization': `token ${access_token}`
                 }
-            });
-
-            const orgData = [];
-            for (const org of orgsData.data) {
-                orgData.push({ ...org, twoFA: org.two_factor_requirement_enabled });
-            }
-            setOrgData(orgData);
-            setIsLoaded(true);
-        };
-        if (!isLoaded && state.isLoggedIn) {
-            fetchData();
+            })
+            .then((res) => {
+                setOrgData(res.data);
+                setIsLoaded(true);
+            })
         }
     }, [isLoaded, orgData])
 
@@ -39,8 +33,8 @@ export default function Organization(){
         <div>
             {redirect ? (
                 <Redirect to={{
-                    pathname: '/orgs/' + clickedOrg.login + '/repos',
-                    state: { orgName: clickedOrg.login }
+                    pathname: '/orgs/' + clickedOrg.name + '/repos',
+                    state: { orgName: clickedOrg.name }
                 }}/>
             ) : (
                 <>
@@ -66,7 +60,7 @@ export default function Organization(){
                                                 <Card.Content>
                                                     <Card.Header>{org.login}</Card.Header>
                                                     <Card.Description>
-                                                        {org.twoFA === true ? (
+                                                        {org.two_factor_requirement_enabled === true ? (
                                                             <p style={{ color: "green"}}>Two-factor Authentication is enabled</p>
                                                         ) : (
                                                             <p style={{ color: "red"}}>Two-factor Authentication is not enabled</p>
