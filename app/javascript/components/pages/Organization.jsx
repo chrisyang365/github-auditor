@@ -58,7 +58,7 @@ export default function Organization(){
                                             >
                                                 <Image src={org.avatar_url} wrapped ui={false} />
                                                 <Card.Content>
-                                                    <Card.Header>{org.login}</Card.Header>
+                                                    <Card.Header>{org.name}</Card.Header>
                                                     <Card.Description>
                                                         {org.two_factor_requirement_enabled === true ? (
                                                             <p style={{ color: "green"}}>Two-factor Authentication is enabled</p>
