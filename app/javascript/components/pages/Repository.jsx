@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Redirect, Link, useLocation } from "react-router-dom";
-import { Card, Dimmer, Header, Image, Loader, List } from 'semantic-ui-react'
+import { Card, Dimmer, Header, Image, Loader, List, Button } from 'semantic-ui-react'
 import axios from 'axios';
 import { AuthContext } from "../App";
 import NavBar from "../layout/NavBar"
@@ -47,7 +47,7 @@ export default function Repositories(props){
             <>
             <NavBar />
                 {isLoaded ? (
-                    <>
+                    <div style={{padding: 20 + "px"}}>
                         <h1>Title: {repoData.name}</h1>
                         <body>Description: {repoData.description}</body>
                         <ul>
@@ -64,7 +64,14 @@ export default function Repositories(props){
                             <li>Open issues: {repoData.open_issues}</li>
                             {/* Add other necessary stuff for demo and make it look better */}
                         </ul>
-                    </>
+                        <Button
+                            as={Link}
+                            content='Dependabot alerts'
+                            icon='right arrow'
+                            labelPosition='right' 
+                            to={location.pathname + '/dependabotalerts'}
+                        />
+                    </div>
                 ) : (
                     <Dimmer active>
                         <Loader>Loading</Loader>
