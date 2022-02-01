@@ -1,7 +1,7 @@
 class Api::ReposController < ApplicationController
     before_action :get_orgs, :check_org
     def index
-      render json: { repositories: @organization.repositories}, status: :ok
+      render json: { repositories: @organization.repositories.order("name")}, status: :ok
     end
 
     private
