@@ -47,7 +47,7 @@ export default function NavBar() {
 
     const handleLogin = () => {
         setData({ ...data, errorMessage: "" });
-        window.location.replace(`https://github.com/login/oauth/authorize?scope=user&client_id=${client_id}&redirect_uri=${redirect_uri}`)
+        window.location.replace(`https://github.com/login/oauth/authorize?scope=user%20admin:org%20security_events%20repo%20admin:org_hook&client_id=${client_id}&redirect_uri=${redirect_uri}`)
         //return <Redirect to={`https://github.com/login/oauth/authorize?scope=user&client_id=${client_id}&redirect_uri=${redirect_uri}`} />
     }
 
