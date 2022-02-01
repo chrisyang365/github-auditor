@@ -49,28 +49,34 @@ export default function DependabotAlerts(props) {
             <NavBar />
                 {isLoaded ? (
                     <>
-                        <Item.Group style={{padding: 20 + 'px'}}>
-                            {dependabotAlertsData
-                            .sort((a,b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : -1)
-                            .map((dependabotAlert) => {
-                                return (
-                                    <Item>
-                                        <Item.Content>
-                                            <Item.Header>{dependabotAlert.name}</Item.Header>
-                                            <Item.Description>
-                                                {dependabotAlert.description}
-                                                <ul>
-                                                    <li>Severity: {dependabotAlert.severity}</li>
-                                                    <li>Status: {dependabotAlert.status}</li>
-                                                    <li>Created at: {dependabotAlert.created_at}</li>
-                                                    <li>Updated at: {dependabotAlert.updated_at}</li>
-                                                </ul>
-                                            </Item.Description>
-                                        </Item.Content>
-                                    </Item>
-                                )
-                            })}
-                        </Item.Group>
+                        {dependabotAlertsData.length > 0 ? (
+                            <Item.Group style={{padding: 20 + 'px'}}>
+                                {dependabotAlertsData
+                                .sort((a,b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : -1)
+                                .map((dependabotAlert) => {
+                                    return (
+                                        <Item>
+                                            <Item.Content>
+                                                <Item.Header>{dependabotAlert.name}</Item.Header>
+                                                <Item.Description>
+                                                    {dependabotAlert.description}
+                                                    <ul>
+                                                        <li>Severity: {dependabotAlert.severity}</li>
+                                                        <li>Status: {dependabotAlert.status}</li>
+                                                        <li>Created at: {dependabotAlert.created_at}</li>
+                                                        <li>Updated at: {dependabotAlert.updated_at}</li>
+                                                    </ul>
+                                                </Item.Description>
+                                            </Item.Content>
+                                        </Item>
+                                    )
+                                })}
+                            </Item.Group>
+                        ) : (
+                            <Header as='h2' textAlign='center' disabled>
+                                No dependabot alerts are associated with this repository.
+                            </Header>
+                        )}
                     </>
                 ) : (
                     <Dimmer active>
