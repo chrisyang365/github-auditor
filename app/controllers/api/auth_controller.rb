@@ -24,7 +24,7 @@ class Api::AuthController < ApplicationController
     if existing_user.nil?
       GithubAuditJob.perform_later(access_token, user_obj['login'], user_obj['name'])
     else
-      User.update(access_token: access_token, login: user_obj['login'], name: user_obj['name'])
+      existing_user.update(access_token: access_token, login: user_obj['login'], name: user_obj['name'])
     end
 
     render json: { access_token: access_token, login: user_obj['login'], username: user_obj['name']}, status: :accepted
