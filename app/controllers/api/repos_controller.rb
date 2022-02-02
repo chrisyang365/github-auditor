@@ -1,7 +1,15 @@
 class Api::ReposController < ApplicationController
     before_action :get_orgs, :check_org
-    def index
-      render json: { repositories: @organization.repositories}, status: :ok
+    def index      
+      repos = @organization.repositories
+      repos_json = JSON.parse(repos.to_json())
+
+      # add code_alerts_exist flag to repositories json
+      repos.zip(repos_json).each { |repo, repo_json|
+        repo_json["code_alerts_exist"] = repo.code_alerts.size() > 0
+      }
+
+      render json: { repositories: repos_json }, status: :ok
     end
 
     private
