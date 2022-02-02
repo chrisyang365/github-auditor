@@ -66,7 +66,7 @@ class GithubAuditJob < ApplicationJob
           end
         end
       else
-        user_orgs.append(Organization.find(name: org_name))
+        user_orgs.append(Organization.find_by(name: org_name))
       end
     end
     @user.organizations = user_orgs
