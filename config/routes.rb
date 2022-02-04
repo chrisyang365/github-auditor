@@ -8,6 +8,7 @@ Rails.application.routes.draw do
     resources 'orgs', only: [:index] do
       resources 'repos', only: [:index] do
         get 'dependabotalerts', to: 'dependabot_alert#get'
+        get 'codealerts', to: 'code_alerts#get'
       end
     end
     resources 'webhooks', only: [:create]
