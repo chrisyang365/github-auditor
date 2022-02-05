@@ -1,2 +1,0 @@
-module CodeAlertsHelper
-end
