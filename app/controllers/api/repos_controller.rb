@@ -6,7 +6,7 @@ class Api::ReposController < ApplicationController
 
       # add code_alerts_exist flag to repositories json
       repos.zip(repos_json).each { |repo, repo_json|
-        repo_json["code_alerts_exist"] = repo.code_alerts.size() > 0
+        repo_json["code_alerts_exist"] |= (repo.code_alerts.size() > 0)
       }
 
       render json: { repositories: repos_json }, status: :ok

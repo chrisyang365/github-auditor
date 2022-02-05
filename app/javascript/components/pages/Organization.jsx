@@ -5,6 +5,7 @@ import axios from 'axios';
 import { AuthContext } from "../App";
 import NavBar from "../layout/NavBar";
 import plusminus from "../../../assets/images/plusminus.png";
+import './Organization.css';
 
 export default function Organization(){
 
@@ -13,6 +14,7 @@ export default function Organization(){
     const [orgData, setOrgData] = useState([]);
     const [redirect, setRedirect] = useState(false);
     const [clickedOrg, setClickedOrg] = useState(null);
+    const [searchTerm, setSearchState] = useState("");
 
     useEffect(() => {
         if (!isLoaded && state.isLoggedIn) {
@@ -42,10 +44,30 @@ export default function Organization(){
                 <>
                 <NavBar />
                     {isLoaded ? (
-                        <>
+                        <>  
+                            <div style={{display:"flex", justifyContent:"center"}}>
+                                <input 
+                                    type = "text" 
+                                    style={{marginBottom:"15px",
+                                        height:"50px",
+                                        width: "300px",
+                                        borderRadius: "5px",
+                                        paddingLeft: "10px",
+                                        fontSize: "20px"}} 
+                                    placeholder="Search for org..." 
+                                    onChange={event => {setSearchState(event.target.value);
+                                    }}
+                                />
+                            </div>
                             {orgData.length > 0 ? (
                                 <Card.Group centered>
-                                    {orgData.map((org, index) => {
+                                    {orgData.filter((org)=> {
+                                        if (searchTerm == ""){
+                                            return org
+                                        } else if (org.name.toLowerCase().includes(searchTerm.toLowerCase())) {
+                                            return org
+                                        }
+                                    }).map((org, index) => {
                                         return (
                                             <Card 
                                                 link
