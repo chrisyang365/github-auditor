@@ -16,3 +16,8 @@
 - requires `Authorization` header to be set with access token passed in like this: `token ACCESS_TOKEN`
 - returns the associated `dependabot_alert` objects that belong to repository with `:repo_id` under `organization` object with `:org_id`
 - return `HTTP 401: Unauthorized` if provided access_token is not valid
+
+### GET `/orgs/:org_id/repos/:repo_id/codealerts`
+- requires `Authorization` header to be set with access token passed in like this: `token ACCESS_TOKEN`
+- returns the associated `code_alert` objects that belong to repository with `:repo_id` under `organization` object with `:org_id`
+- return `HTTP 401: Unauthorized` if provided access_token is not valid
