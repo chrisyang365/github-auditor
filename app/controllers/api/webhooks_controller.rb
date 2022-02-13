@@ -4,7 +4,7 @@ class Api::WebhooksController < ApplicationController
 
   def create
     if request.headers['X-GitHub-Event'] == 'repository_vulnerability_alert'
-      action = params['action']
+      action = params['webhook']['action']
       alert = params['alert']
       node_id = alert['node_id']
       severity = alert['severity'].upcase
