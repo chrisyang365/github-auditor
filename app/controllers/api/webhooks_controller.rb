@@ -3,7 +3,7 @@ class Api::WebhooksController < ApplicationController
   before_action :verify_sender
 
   def create
-    if headers['X-GitHub-Event'] == 'repository_vulnerability_alert'
+    if request.headers['X-GitHub-Event'] == 'repository_vulnerability_alert'
       action = params['action']
       alert = params['alert']
       node_id = alert['node_id']
