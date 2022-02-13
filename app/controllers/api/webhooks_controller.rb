@@ -7,7 +7,7 @@ class Api::WebhooksController < ApplicationController
       action = params['action']
       alert = params['alert']
       node_id = alert['node_id']
-      severity = alert['severity']
+      severity = alert['severity'].upcase
       repo_name = params['repository']['full_name']
       repo = Repository.find_by(name: repo_name)
       if action == 'create'
