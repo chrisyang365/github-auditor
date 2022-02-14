@@ -8,15 +8,7 @@ function Homepage(props) {
 
     return (
         <div>
-            {state.isLoggedIn ? (
-                <>
-                    <NavBar />
-                    <h1>Welcome {state.user.username}!</h1>
-
-                </>
-            ) : (
-                <Redirect to="/login" />
-            )}
+            <Redirect to={state.isLoggedIn ? "/orgs" : "/login"} />
         </div>
     )
 }
