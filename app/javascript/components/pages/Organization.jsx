@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Link, Redirect } from "react-router-dom";
+import { Link, Redirect, useLocation } from "react-router-dom";
 import { Card, Dimmer, Header, Icon, Image, Loader } from 'semantic-ui-react'
 import axios from 'axios';
 import { AuthContext } from "../App";
@@ -15,6 +15,7 @@ export default function Organization(){
     const [redirect, setRedirect] = useState(false);
     const [clickedOrg, setClickedOrg] = useState(null);
     const [searchTerm, setSearchState] = useState("");
+    const location = useLocation();
 
     useEffect(() => {
         if (!isLoaded && state.isLoggedIn) {
@@ -33,7 +34,9 @@ export default function Organization(){
 
     return(
         <div>
-            {redirect ? (
+            {!location.pathname.includes('orgs') ? (
+                <Redirect to={'/orgs'} />
+            ) : redirect ? (
                 <Redirect to={{
                     pathname: '/orgs/' + clickedOrg.name + '/repos',
                     state: { orgName: clickedOrg.name }

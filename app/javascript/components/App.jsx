@@ -1,6 +1,5 @@
 import React, { createContext, useReducer } from 'react';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import Homepage from "./pages/Homepage";
 import Login from "./pages/Login";
 import Organization from "./pages/Organization"
 import Repositories from './pages/Repositories';
@@ -23,18 +22,17 @@ function App() {
         dispatch
       }}
     >
-    
-    <Router>
-      <Switch>
-        <Route path="/docs" exact component={Docs}/>
-        <Route path="/orgs" exact component={Organization}/>
-        <Route path="/orgs/:name/repos" exact component={Repositories}/>
-        <Route path="/orgs/:name/repos/:repo" exact component={Repository}/>
-        <Route path="/orgs/:name/repos/:repo/dependabotalerts" exact component={DependabotAlerts}/>
-        <Route path="/login" component={Login}/>
-        <Route path="/" exact component={Homepage}/>
-      </Switch>
-    </Router>
+      <Router>
+        <Switch>
+          <Route path="/docs" exact component={Docs}/>
+          <Route path="/" exact component={Organization}/>
+          <Route path="/orgs" exact component={Organization}/>
+          <Route path="/orgs/:name/repos" exact component={Repositories}/>
+          <Route path="/orgs/:name/repos/:repo" exact component={Repository}/>
+          <Route path="/orgs/:name/repos/:repo/dependabotalerts" exact component={DependabotAlerts}/>
+          <Route path="/login" component={Login}/>
+        </Switch>
+      </Router>
     </AuthContext.Provider>
   );
 }
