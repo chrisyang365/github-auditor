@@ -103,7 +103,7 @@ export default function Organization(){
                                                                 </Label.Detail>
                                                             </Label> */}
                                                             <Label>
-                                                                Dependabot Alerts
+                                                                {org.dependabot_alerts_exist ? 'Unresolved Dependabot Alerts' : 'Free of Dependabot Alerts'}
                                                                 <Label.Detail>
                                                                     <Icon color={getIconColor(!org.dependabot_alerts_exist)} name={getIconName(!org.dependabot_alerts_exist)} />
                                                                 </Label.Detail>
