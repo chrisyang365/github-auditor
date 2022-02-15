@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Redirect } from "react-router-dom";
 import { AuthContext } from "../App";
-import GithubButton from 'react-github-login-button'; // unused
 import {
   Button, Container, Header, Icon,
   Segment, Dimmer, Loader
@@ -87,7 +86,7 @@ export default function Login() {
   )
 
   if (state.isLoggedIn) {
-    return <Redirect to="/" />;
+    return <Redirect to="/docs" />;
   }
 
   return (

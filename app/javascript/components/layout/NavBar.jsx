@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from "../App";
-import { Menu, Segment } from 'semantic-ui-react';
+import { Menu, Segment, Icon } from 'semantic-ui-react';
 import { Link, Redirect } from 'react-router-dom';
 import GithubButton from 'react-github-login-button';
 import axios from 'axios';
@@ -62,20 +62,27 @@ export default function NavBar() {
             <Segment inverted attached='bottom'>
                 <Menu inverted pointing secondary>
                     <Menu.Item
-                        name='profile'
-                        as={Link}
-                        to={'/'}
-                    />
-                    <Menu.Item
                         name='organizations'
                         as={Link}
                         to={'/orgs'}
                     />
+                    <Menu.Item
+                        name='docs'
+                        as={Link}
+                        to={'/docs'}
+                    />
                     <Menu.Menu position='right'>
+                        <Menu.Item style={{ pointerEvents: 'none' }} // not clickable, just for show
+                            name='loggedin'
+                            content={'Logged in: ' + state.user.username}
+                            onClick={() => []} // needed to maintain faint color like other icons
+                        />
                         <Menu.Item
                             name='logout'
-                            content='Log out'
-                            onClick={handleLogout} />
+                            onClick={handleLogout}
+                        >
+                            <Icon name='sign-out' />
+                        </Menu.Item>
                     </Menu.Menu>
                 </Menu>
             </Segment>

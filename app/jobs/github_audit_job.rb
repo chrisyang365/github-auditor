@@ -16,7 +16,7 @@ class GithubAuditJob < ApplicationJob
     login = args[1]
     name = args[2]
 
-    @user = User.create(access_token: access_token, login: login, name: name)
+    @user = User.new(access_token: access_token, login: login, name: name)
 
     orgs_json.each do |org|
       org_names.append(org['login'])
@@ -52,6 +52,43 @@ class GithubAuditJob < ApplicationJob
 
           repos_json.each do |repo|
             new_repo = Repository.create(name: repo['full_name'], organization: new_org)
+
+            # Retrieve Dependabot Alerts via GraphQL API
+            query = <<-GRAPHQL
+            query {
+                repository(name: "#{repo['name']}", owner: "#{org_name}") {
+                    vulnerabilityAlerts(first: 100) {
+                        nodes {
+                            id
+                            dismissedAt
+                            securityVulnerability {
+                                severity
+                            }
+                        }
+                      pageInfo {
+                        endCursor
+                        hasNextPage
+                      }
+                    }
+                }
+            }
+            GRAPHQL
+            graphql_uri = URI("https://api.github.com/graphql")
+            graphql_res = Net::HTTP.start(graphql_uri.host, graphql_uri.port, use_ssl: true) do |http|
+                graphql_req = Net::HTTP::Post.new(graphql_uri)
+                graphql_req['Content-Type'] = 'application/json'
+                graphql_req['Authorization'] = "bearer #{access_token}"
+                # The body needs to be a JSON string.
+                graphql_req.body = JSON[{'query' => query}]
+                http.request(graphql_req)
+            end
+            dependabot_alerts_json = JSON.parse(graphql_res.body)
+            repo_dependabot_alerts = []
+            dependabot_alerts_json['data']['repository']['vulnerabilityAlerts']['nodes'].each do |alert|
+              if alert['dismisssedAt'].nil?
+                DependabotAlert.create(node_id: alert['id'], severity: alert['securityVulnerability']['severity'], repository: new_repo)
+              end
+            end
           end
 
           #Enable webhooks for org

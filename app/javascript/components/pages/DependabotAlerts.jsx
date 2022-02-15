@@ -9,7 +9,7 @@ export default function DependabotAlerts(props) {
 
     const { state, dispatch } = useContext(AuthContext);
     const [isLoaded, setIsLoaded] = useState(false);
-    const [dependabotAlertsData, setDependabotAlertsData] = useState([]);
+    const [dependabotAlertsData, setDependabotAlertsData] = useState({});
     const location = useLocation()
 
     useEffect(() => {
@@ -31,8 +31,15 @@ export default function DependabotAlerts(props) {
                 }
             })
             .then((res) => {
-                console.log(res.data)
-                setDependabotAlertsData(res.data['dependabot_alerts']);
+                const severity_count = {}
+                for (let i = 0; i < res.data['dependabot_alerts'].length; i++)  {
+                    const alert = res.data['dependabot_alerts'][i]
+                    if (!(alert.severity in severity_count)) {
+                        severity_count[alert.severity] = 0
+                    }
+                    severity_count[alert.severity] += 1
+                }
+                setDependabotAlertsData(severity_count);
                 setIsLoaded(true);
             })
             .catch((error) => {
@@ -49,23 +56,15 @@ export default function DependabotAlerts(props) {
             <NavBar />
                 {isLoaded ? (
                     <>
-                        {dependabotAlertsData.length > 0 ? (
+                        {Object.keys(dependabotAlertsData).length > 0 ? (
                             <Item.Group style={{padding: 20 + 'px'}}>
-                                {dependabotAlertsData
-                                .sort((a,b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : -1)
-                                .map((dependabotAlert) => {
+                                {Object.keys(dependabotAlertsData).map((severity) => {
                                     return (
                                         <Item>
                                             <Item.Content>
-                                                <Item.Header>{dependabotAlert.name}</Item.Header>
+                                                <Item.Header>{severity}</Item.Header>
                                                 <Item.Description>
-                                                    {dependabotAlert.description}
-                                                    <ul>
-                                                        <li>Severity: {dependabotAlert.severity}</li>
-                                                        <li>Status: {dependabotAlert.status}</li>
-                                                        <li>Created at: {dependabotAlert.created_at}</li>
-                                                        <li>Updated at: {dependabotAlert.updated_at}</li>
-                                                    </ul>
+                                                    {dependabotAlertsData[severity]}
                                                 </Item.Description>
                                             </Item.Content>
                                         </Item>
