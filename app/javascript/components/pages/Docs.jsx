@@ -2,31 +2,51 @@ import React, { useContext } from 'react';
 import { Redirect } from "react-router-dom";
 import { AuthContext } from "../App";
 import NavBar from "../layout/NavBar";
+import Lottie from 'react-lottie';
+import animationData from '../../lotties/code-security.json';
+import { Header } from 'semantic-ui-react';
 
 export default function Docs(props) {
     const { state } = useContext(AuthContext);
+    const defaultOptions = {
+      loop: true,
+      autoplay: true,
+      animationData: animationData,
+      rendererSettings: {
+        preserveAspectRatio: "xMidYMid slice"
+      }
+    };
 
     return (
-        <div>
-            {state.isLoggedIn ? (
-                <>
-                    <NavBar />
-                    <div style={{padding: 20 + 'px'}}>
-                        <h1>Welcome to the documentation!</h1>
-                        <br/>
-                        <h2>Auditing GitHub Organizations:</h2>
-                        <h3>
-                            To audit GitHub organizations, go to the organizations 
-                            tab displayed at the top of the screen. From this screen,
-                            we can see all of the organizations that you are apart of.
-                            You can then click on each organization and look into the
-                            vulnerabilities such as API key or dependabot alerts.
-                        </h3>
-                    </div>
-                </>
-            ) : (
-                <Redirect to="/login" />
-            )}
-        </div>
+      <div>
+        {state.isLoggedIn ? (
+            <>
+                <NavBar />
+                <div style={{justifyContent: "center", display: "flex", padding: 20 + 'px'}}>
+                    <Header
+                      as="h1"
+                      style={{
+                        fontSize: '6em',
+                        fontWeight: 'normal',
+                        width: '5em',
+                        marginLeft: '3em',
+                        marginTop: '1em',
+                      }}
+                      content="Security dashboard for GitHub Organizations"/>
+                  <Lottie
+                      style={{
+                        marginLeft: "20em"
+                      }}
+                      options={defaultOptions}
+                      height={600}
+                      width={600}
+                  />
+                </div>
+
+            </>
+        ) : (
+            <Redirect to="/login" />
+        )}
+    </div>
     )
 }
