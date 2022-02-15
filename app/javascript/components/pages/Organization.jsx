@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Link, Redirect, useLocation } from "react-router-dom";
-import { Card, Dimmer, Header, Icon, Image, Loader } from 'semantic-ui-react'
+import { Card, Dimmer, Header, Icon, Image, Loader, Label } from 'semantic-ui-react'
 import axios from 'axios';
 import { AuthContext } from "../App";
 import NavBar from "../layout/NavBar";
