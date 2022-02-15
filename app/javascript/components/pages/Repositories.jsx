@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Redirect, Link, useLocation } from "react-router-dom";
-import { Card, Dimmer, Header, Image, Loader } from 'semantic-ui-react'
+import { Button, Card, Dimmer, Header, Icon, Label, Loader } from 'semantic-ui-react'
 import axios from 'axios';
 import { AuthContext } from "../App";
 import NavBar from "../layout/NavBar"
@@ -27,7 +27,7 @@ export default function Repositories(props){
                 }
             })
             .then((res) => {
-                setRepoData(res.data['repositories']);
+                setRepoData(res.data);
                 setIsLoaded(true);
             })
             .catch((error) => {
@@ -36,6 +36,21 @@ export default function Repositories(props){
             })
         }
     }, [isLoaded, repoData])
+
+    const getDependabotAlertCategories = (alerts) => {
+        const severity_count = {'LOW': 0, 'MODERATE': 0, 'HIGH': 0, 'CRITICAL': 0}
+        for (let i = 0; i < alerts.length; i++)  {
+            const alert = alerts[i]
+            severity_count[alert.severity] += 1
+        }
+        console.log(severity_count)
+        return severity_count
+    }
+
+    const getSeverityColor = (severity) => {
+        const severity_to_color = {'LOW': 'gray', 'MODERATE': '#d29922', 'HIGH': '#db6d28', 'CRITICAL': '#f85149'}
+        return severity_to_color[severity]
+    }
 
     return(
         <div>
@@ -58,18 +73,51 @@ export default function Repositories(props){
                                     .map((repo) => {
                                         let repoDisplayName = repo.name.split('/')[1]
                                         return (
-                                            <Card 
-                                                link
-                                                onClick={(event,data) => {
-                                                    setClickedRepo(repoDisplayName);
-                                                    setRedirect(true);
-                                                }}
-                                                // to={'/orgs/' + repo.owner.login + '/repos/' + repo.name}
+                                            <Card
+                                                // onClick={(event,data) => {
+                                                //     setClickedRepo(repoDisplayName);
+                                                //     setRedirect(true);
+                                                // }}
                                             >
                                                 <Card.Content>
                                                     <Card.Header>{repoDisplayName}</Card.Header>
                                                     <Card.Description>
-                                                        {repo.description ? repo.description : ""}
+                                                        <Label.Group size="medium">
+                                                            {repo.dependabot_alerts.length > 0 ? (
+                                                                <Label as="a" href={"https://github.com/" + repo.name + "/security/dependabot"} name={repo.name} onClick={(e, data) => {
+                                                                    console.log(data)
+                                                                }}>
+                                                                    Pending Dependabot Alerts:
+                                                                    <div style={{display: "flex"}}>
+                                                                    {Object.entries(getDependabotAlertCategories(repo.dependabot_alerts)).map((alert) => {
+                                                                        return (
+                                                                            <p className="pull-left" style={{color: getSeverityColor(alert[0])}}>{alert[0]}: {alert[1]}</p>
+                                                                        )
+                                                                    })}
+                                                                    </div>
+                                                                </Label>
+                                                            ) : (
+                                                                <Label>
+                                                                    Free of Dependabot Alerts
+                                                                    <Label.Detail>
+                                                                        <Icon color="green" name="check" />
+                                                                    </Label.Detail>
+                                                                </Label>
+                                                            )}
+                                                            {repo.code_alerts.length > 0 ? (
+                                                                <></>
+                                                            ) : (
+                                                                <Label>
+                                                                    Free of Code Alerts
+                                                                    <Label.Detail>
+                                                                        <Icon color="green" name="check" />
+                                                                    </Label.Detail>
+                                                                </Label>
+                                                            )}
+                                                            <Label.Detail>
+
+                                                            </Label.Detail>
+                                                        </Label.Group>
                                                     </Card.Description>
                                                 </Card.Content>
                                             </Card>
