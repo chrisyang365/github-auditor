@@ -71,6 +71,15 @@ export default function Repositories(props){
                             labelPosition='right' 
                             to={location.pathname + '/dependabotalerts'}
                         />
+                        <br></br>
+                        <br></br>
+                        <Button
+                            as={Link}
+                            content='Code alerts'
+                            icon='right arrow'
+                            labelPosition='right' 
+                            to={location.pathname + '/codealerts'}
+                        />
                     </div>
                 ) : (
                     <Dimmer active>
