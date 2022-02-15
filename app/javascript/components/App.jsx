@@ -5,6 +5,7 @@ import Organization from "./pages/Organization"
 import Repositories from './pages/Repositories';
 import Repository from './pages/Repository';
 import DependabotAlerts from './pages/DependabotAlerts';
+import CodeAlerts from './pages/CodeAlerts';
 import Docs from './pages/Docs'
 import { initialState, reducer } from "../store/reducer";
 import NavBar from './layout/NavBar';
@@ -31,6 +32,7 @@ function App() {
         <Route path="/orgs/:name/repos" exact component={Repositories}/>
         <Route path="/orgs/:name/repos/:repo" exact component={Repository}/>
         <Route path="/orgs/:name/repos/:repo/dependabotalerts" exact component={DependabotAlerts}/>
+        <Route path="/orgs/:name/repos/:repo/codealerts" exact component={CodeAlerts}/>
         <Route path="/login" component={Login}/>
       </Switch>
     </Router>
