@@ -101,14 +101,14 @@ export default function Organization(){
                                                                 <Label.Detail>
                                                                     <Icon color={getIconColor(org.issues.noOutsideContribs)} name={getIconName(org.issues.noOutsideContribs)} />
                                                                 </Label.Detail>
-                                                            </Label>
+                                                            </Label> */}
                                                             <Label>
                                                                 Dependabot Alerts
                                                                 <Label.Detail>
-                                                                    <Icon color={getIconColor(org.issues.dependabot)} name={getIconName(org.issues.dependabot)} />
+                                                                    <Icon color={getIconColor(!org.dependabot_alerts_exist)} name={getIconName(!org.dependabot_alerts_exist)} />
                                                                 </Label.Detail>
                                                             </Label>
-                                                            <Label>
+                                                            {/* <Label>
                                                                 All PRs Have Reviewers
                                                                 <Label.Detail>
                                                                     <Icon color={getIconColor(org.issues.PRsHaveReviewers)} name={getIconName(org.issues.PRsHaveReviewers)} />
@@ -126,11 +126,11 @@ export default function Organization(){
                                             </Card>
                                         )
                                     })}
-                                    <Card link href={`https://github.com/settings/connections/applications/${state.client_id}`} target="_blank" rel="noreferrer noopener">
+                                    {/* <Card link href={`https://github.com/settings/connections/applications/${state.client_id}`} target="_blank" rel="noreferrer noopener">
                                         <Card.Content>
                                             <Label image size='large' style={{ marginBottom: "1em" }}><Image  style={{ padding: "0.25em" }} src={plusminus} />Manage Organization Access</Label>
                                         </Card.Content>
-                                    </Card>
+                                    </Card> */}
                                 </Card.Group>
                             ) : (
                                 <Header as='h2' textAlign='center' disabled>
