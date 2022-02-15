@@ -39,7 +39,7 @@ export default function Organization(){
             ) : redirect ? (
                 <Redirect to={{
                     pathname: '/orgs/' + clickedOrg.name + '/repos',
-                    state: { orgName: clickedOrg.name }
+                    state: { orgName: clickedOrg.name, org: clickedOrg }
                 }}/>
             ) : (
                 <>
@@ -71,6 +71,8 @@ export default function Organization(){
                                             return org
                                         }
                                     }).map((org, index) => {
+                                        const getIconColor = enabled => enabled ? 'green' : 'red'
+                                        const getIconName = enabled => enabled ? 'check' : 'x'
                                         return (
                                             <Card 
                                                 link
@@ -81,26 +83,52 @@ export default function Organization(){
                                                 // to={'/orgs/' + org.login + '/repos'}
                                                 key={index}
                                             >
-                                                <Image src={org.avatar_url} wrapped ui={false} />
+                                                {/* <Image src={org.avatar_url} wrapped ui={false} /> */}
                                                 <Card.Content>
-                                                    <Card.Header>{org.name}</Card.Header>
+                                                    <Label image size='large' color='black' style={{ marginBottom: "1em" }}>
+                                                        <Image avatar style={{ marginLeft: "0.25em", marginTop: "0.25em", marginBottom: "0.25em" }} src={org.avatar_url} />{org.name ? org.name : org.login}
+                                                    </Label>
                                                     <Card.Description>
-                                                        {org.two_factor_requirement_enabled === true ? (
-                                                            <p style={{ color: "green"}}>Two-factor Authentication is enabled</p>
-                                                        ) : (
-                                                            <p style={{ color: "red"}}>Two-factor Authentication is not enabled</p>
-                                                        )}
+                                                        <Label.Group size='medium'>
+                                                            <Label>
+                                                                2FA Requirement
+                                                                <Label.Detail>
+                                                                    <Icon color={getIconColor(org.two_factor_requirement_enabled)} name={getIconName(org.two_factor_requirement_enabled)} />
+                                                                </Label.Detail>
+                                                            </Label>
+                                                            {/* <Label>
+                                                                No Outside Contributors
+                                                                <Label.Detail>
+                                                                    <Icon color={getIconColor(org.issues.noOutsideContribs)} name={getIconName(org.issues.noOutsideContribs)} />
+                                                                </Label.Detail>
+                                                            </Label>
+                                                            <Label>
+                                                                Dependabot Alerts
+                                                                <Label.Detail>
+                                                                    <Icon color={getIconColor(org.issues.dependabot)} name={getIconName(org.issues.dependabot)} />
+                                                                </Label.Detail>
+                                                            </Label>
+                                                            <Label>
+                                                                All PRs Have Reviewers
+                                                                <Label.Detail>
+                                                                    <Icon color={getIconColor(org.issues.PRsHaveReviewers)} name={getIconName(org.issues.PRsHaveReviewers)} />
+                                                                </Label.Detail>
+                                                            </Label> */}
+                                                            <Label>
+                                                                Free of Code Alerts
+                                                                <Label.Detail>
+                                                                    <Icon color={getIconColor(!org.code_alerts_exist)} name={getIconName(!org.code_alerts_exist)} />
+                                                                </Label.Detail>
+                                                            </Label>
+                                                        </Label.Group>
                                                     </Card.Description>
                                                 </Card.Content>
                                             </Card>
                                         )
                                     })}
-                                    <Card link href={`https://github.com/settings/connections/applications/${state.client_id}`} target="_blank">
-                                        <Image src={plusminus} wrapped ui={false} />
+                                    <Card link href={`https://github.com/settings/connections/applications/${state.client_id}`} target="_blank" rel="noreferrer noopener">
                                         <Card.Content>
-                                            <Card.Header>
-                                                Manage organizations access
-                                            </Card.Header>
+                                            <Label image size='large' style={{ marginBottom: "1em" }}><Image  style={{ padding: "0.25em" }} src={plusminus} />Manage Organization Access</Label>
                                         </Card.Content>
                                     </Card>
                                 </Card.Group>
