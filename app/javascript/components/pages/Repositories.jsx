@@ -84,9 +84,7 @@ export default function Repositories(props){
                                                     <Card.Description>
                                                         <Label.Group size="medium">
                                                             {repo.dependabot_alerts.length > 0 ? (
-                                                                <Label as="a" href={"https://github.com/" + repo.name + "/security/dependabot"} name={repo.name} onClick={(e, data) => {
-                                                                    console.log(data)
-                                                                }}>
+                                                                <Label as="a" href={"https://github.com/" + repo.name + "/security/dependabot"} name={repo.name} >
                                                                     Pending Dependabot Alerts:
                                                                     <div style={{display: "flex"}}>
                                                                     {Object.entries(getDependabotAlertCategories(repo.dependabot_alerts)).map((alert) => {
@@ -105,10 +103,30 @@ export default function Repositories(props){
                                                                 </Label>
                                                             )}
                                                             {repo.code_alerts.length > 0 ? (
-                                                                <></>
+                                                                <Label as="a" href={"https://github.com/" + repo.name + "/security/code-scanning"} name={repo.name} >
+                                                                    {repo.code_alerts.length} Pending Code Scan Alerts
+                                                                    <Label.Detail>
+                                                                        <Icon color="red" name="x" />
+                                                                    </Label.Detail>
+                                                                </Label>
                                                             ) : (
                                                                 <Label>
-                                                                    Free of Code Alerts
+                                                                    Free of Code Scan Alerts
+                                                                    <Label.Detail>
+                                                                        <Icon color="green" name="check" />
+                                                                    </Label.Detail>
+                                                                </Label>
+                                                            )}
+                                                            {repo.secret_alerts.length > 0 ? (
+                                                                <Label as="a" href={"https://github.com/" + repo.name + "/security/secret-scanning"} name={repo.name} >
+                                                                    {repo.secret_alerts.length} Pending Secret Scan Alerts
+                                                                    <Label.Detail>
+                                                                        <Icon color="red" name="x" />
+                                                                    </Label.Detail>
+                                                                </Label>
+                                                            ) : (
+                                                                <Label>
+                                                                    Free of Secret Scan Alerts
                                                                     <Label.Detail>
                                                                         <Icon color="green" name="check" />
                                                                     </Label.Detail>
