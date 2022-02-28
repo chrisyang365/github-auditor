@@ -10,19 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_11_234900) do
+ActiveRecord::Schema.define(version: 2022_02_28_071102) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "code_alerts", force: :cascade do |t|
-    t.string "name"
-    t.text "description"
-    t.string "severity"
-    t.string "status"
     t.bigint "repository_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "alert_number"
     t.index ["repository_id"], name: "index_code_alerts_on_repository_id"
   end
 
@@ -41,6 +38,7 @@ ActiveRecord::Schema.define(version: 2022_02_11_234900) do
     t.boolean "two_factor_requirement_enabled"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "billing_plan"
   end
 
   create_table "repositories", force: :cascade do |t|
@@ -49,6 +47,14 @@ ActiveRecord::Schema.define(version: 2022_02_11_234900) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["organization_id"], name: "index_repositories_on_organization_id"
+  end
+
+  create_table "secret_alerts", force: :cascade do |t|
+    t.integer "alert_number"
+    t.bigint "repository_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["repository_id"], name: "index_secret_alerts_on_repository_id"
   end
 
   create_table "user_org_tables", force: :cascade do |t|
@@ -70,4 +76,5 @@ ActiveRecord::Schema.define(version: 2022_02_11_234900) do
 
   add_foreign_key "code_alerts", "repositories"
   add_foreign_key "dependabot_alerts", "repositories"
+  add_foreign_key "secret_alerts", "repositories"
 end

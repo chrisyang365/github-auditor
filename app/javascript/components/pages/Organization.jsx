@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Link, Redirect, useLocation } from "react-router-dom";
-import { Card, Dimmer, Header, Icon, Image, Loader, Label } from 'semantic-ui-react'
+import { Card, Dimmer, Header, Icon, Image, Loader, Label, Popup } from 'semantic-ui-react'
 import axios from 'axios';
 import { AuthContext } from "../App";
 import NavBar from "../layout/NavBar";
@@ -80,14 +80,21 @@ export default function Organization(){
                                                     setClickedOrg(org);
                                                     setRedirect(true);
                                                 }}
-                                                // to={'/orgs/' + org.login + '/repos'}
                                                 key={index}
                                             >
-                                                {/* <Image src={org.avatar_url} wrapped ui={false} /> */}
                                                 <Card.Content>
                                                     <Label image size='large' color='black' style={{ marginBottom: "1em" }}>
                                                         <Image avatar style={{ marginLeft: "0.25em", marginTop: "0.25em", marginBottom: "0.25em" }} src={org.avatar_url} />{org.name ? org.name : org.login}
                                                     </Label>
+                                                    <Card.Meta>
+                                                        Billing plan: {org.billing_plan}
+                                                        {org.billing_plan !== 'enterprise' ? (
+                                                            <Popup content='We can not audit for secret scan alerts for non-enterprise organizations' trigger={<Icon color='yellow' style={{paddingLeft: '0.5em', paddingRight: '2em'}}name="warning sign" />} />
+                                                        ) : (
+                                                            <></>
+                                                        )
+                                                        }
+                                                    </Card.Meta>
                                                     <Card.Description>
                                                         <Label.Group size='medium'>
                                                             <Label>
@@ -96,28 +103,22 @@ export default function Organization(){
                                                                     <Icon color={getIconColor(org.two_factor_requirement_enabled)} name={getIconName(org.two_factor_requirement_enabled)} />
                                                                 </Label.Detail>
                                                             </Label>
-                                                            {/* <Label>
-                                                                No Outside Contributors
-                                                                <Label.Detail>
-                                                                    <Icon color={getIconColor(org.issues.noOutsideContribs)} name={getIconName(org.issues.noOutsideContribs)} />
-                                                                </Label.Detail>
-                                                            </Label> */}
                                                             <Label>
                                                                 {org.dependabot_alerts_exist ? 'Unresolved Dependabot Alerts' : 'Free of Dependabot Alerts'}
                                                                 <Label.Detail>
                                                                     <Icon color={getIconColor(!org.dependabot_alerts_exist)} name={getIconName(!org.dependabot_alerts_exist)} />
                                                                 </Label.Detail>
                                                             </Label>
-                                                            {/* <Label>
-                                                                All PRs Have Reviewers
-                                                                <Label.Detail>
-                                                                    <Icon color={getIconColor(org.issues.PRsHaveReviewers)} name={getIconName(org.issues.PRsHaveReviewers)} />
-                                                                </Label.Detail>
-                                                            </Label> */}
                                                             <Label>
-                                                                Free of Code Alerts
+                                                                {org.code_alerts_exist ? 'Unresolved Code Scan Alerts' : 'Free of Code Scan Alerts'}
                                                                 <Label.Detail>
                                                                     <Icon color={getIconColor(!org.code_alerts_exist)} name={getIconName(!org.code_alerts_exist)} />
+                                                                </Label.Detail>
+                                                            </Label>
+                                                            <Label>
+                                                                {org.secret_alerts_exist ? 'Unresolved Secret Scan Alerts' : 'Free of Secret Scan Alerts'}
+                                                                <Label.Detail>
+                                                                    <Icon color={getIconColor(!org.secret_alerts_exist)} name={getIconName(!org.secret_alerts_exist)} />
                                                                 </Label.Detail>
                                                             </Label>
                                                         </Label.Group>
@@ -126,11 +127,6 @@ export default function Organization(){
                                             </Card>
                                         )
                                     })}
-                                    {/* <Card link href={`https://github.com/settings/connections/applications/${state.client_id}`} target="_blank" rel="noreferrer noopener">
-                                        <Card.Content>
-                                            <Label image size='large' style={{ marginBottom: "1em" }}><Image  style={{ padding: "0.25em" }} src={plusminus} />Manage Organization Access</Label>
-                                        </Card.Content>
-                                    </Card> */}
                                 </Card.Group>
                             ) : (
                                 <Header as='h2' textAlign='center' disabled>

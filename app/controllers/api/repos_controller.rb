@@ -3,7 +3,7 @@ class Api::ReposController < ApplicationController
     def index      
       @repos = @organization.repositories
 
-      render json: @repos, include: [:code_alerts, :dependabot_alerts], status: :ok
+      render json: @repos, include: [:code_alerts, :dependabot_alerts, :secret_alerts], status: :ok
     end
 
     private

@@ -38,7 +38,7 @@ class GithubAuditJob < ApplicationJob
 
         #We can only audit orgs that loggged in user is an admin for
         if !org_json['two_factor_requirement_enabled'].nil?
-          new_org = Organization.create(name: org_name, avatar_url: org_json['avatar_url'], two_factor_requirement_enabled: org_json['two_factor_requirement_enabled'])
+          new_org = Organization.create(name: org_name, avatar_url: org_json['avatar_url'], two_factor_requirement_enabled: org_json['two_factor_requirement_enabled'], billing_plan: org_json['plan']['name'])
           user_orgs.append(new_org)
 
           #Get all the repos under each org
@@ -89,6 +89,21 @@ class GithubAuditJob < ApplicationJob
                 DependabotAlert.create(node_id: alert['id'], severity: alert['securityVulnerability']['severity'], repository: new_repo)
               end
             end
+
+            #Retrieve code alerts for each repo
+            code_alerts_uri = URI.parse('https://api.github.com/repos/' + repo['full_name'] + '/code-scanning/alerts')
+            code_alerts_req = Net::HTTP::Get.new(code_alerts_uri)
+            code_alerts_req['Authorization'] = 'token ' + access_token
+            code_alerts_res = Net::HTTP.start(code_alerts_uri.hostname, code_alerts_uri.port, :use_ssl => code_alerts_uri.scheme == 'https') do |http|
+              http.request(code_alerts_req)
+            end
+
+            if code_alerts_res.code == '200'
+              code_alerts_json = JSON.parse(code_alerts_res.body)
+              code_alerts_json.each do |alert|
+                CodeAlert.create(alert_number: alert['number'], repository: new_repo)
+              end
+            end
           end
 
           #Enable webhooks for org
@@ -98,7 +113,7 @@ class GithubAuditJob < ApplicationJob
           webhook_events = ['code_scanning_alert', 'member', 'repository', 'repository_vulnerability_alert', 'secret_scanning_alert']
           webhook_config = { url: 'https://github-auditor.herokuapp.com/api/webhooks', content_type: 'json' }
           webhooks_req.body = { name: 'web', config: webhook_config, events: webhook_events }.to_json
-          webhook_res = Net::HTTP.start(webhooks_uri.hostname, webhooks_uri.port, :use_ssl => repos_uri.scheme == 'https') do |http|
+          webhook_res = Net::HTTP.start(webhooks_uri.hostname, webhooks_uri.port, :use_ssl => webhooks_uri.scheme == 'https') do |http|
             http.request(webhooks_req)
           end
         end

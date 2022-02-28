@@ -76,13 +76,14 @@ export default function Docs(props) {
               <Header as='h3' style={{ fontSize: '2em', paddingBottom: '3em' }}>
                 Code Scan Alerts
               </Header>
-              <Image centered src={codeScan} />
+              <Image centered src={secretScan} />
               <p style={{ fontSize: '1.33em', padding: '5em' }}>
               Tokens and private keys are examples of secrets that a service provider can issue.
               If you check a secret into a repository, anyone who has read access to the repository
               can use the secret to access the external service with your privileges. Secret scanning
               will scan your entire Git history on all branches present in your GitHub repository for
-              any secrets.</p>
+              any secrets. Note: our app can only audit for secret scan alerts for organizations that
+              are on the GitHub Enterprise Plan.</p>
             </Grid.Column>
             <Grid.Column style={{ paddingBottom: '5em', paddingTop: '5em' }}>
               <Header as='h3' style={{ fontSize: '2em', paddingBottom: '3em' }}>
@@ -99,7 +100,7 @@ export default function Docs(props) {
               <Header as='h3' style={{ fontSize: '2em', paddingBottom: '3em' }}>
                 Secret Scan Alerts
               </Header>
-              <Image centered src={secretScan} />
+              <Image centered src={codeScan} />
               <p style={{ fontSize: '1.33em', padding: '5em' }}>Code scanning is a feature that you
               use to analyze the code in a GitHub repository to find security vulnerabilities and coding
               errors. Any problems identified by the analysis are shown in GitHub.</p>
