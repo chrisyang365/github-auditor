@@ -15,6 +15,7 @@ export default function Organization(){
     const [redirect, setRedirect] = useState(false);
     const [clickedOrg, setClickedOrg] = useState(null);
     const [searchTerm, setSearchState] = useState("");
+    const [filters, setFilter] = useState({'H2FA':false,'N2FA':false,'HDEP':false,'NDEP':false,'HCODE':false,'NCODE':false,'HSEC':false,'NSEC':false});
     const location = useLocation();
 
     useEffect(() => {
@@ -32,6 +33,12 @@ export default function Organization(){
         }
     }, [isLoaded, orgData])
 
+    const handleOnChange = (filter) => (event) => {
+        setFilter((prev) => ({
+          ...prev,
+          [filter]: event.target.checked,
+        }));
+      };
     return(
         <div>
             {!location.pathname.includes('orgs') ? (
@@ -62,12 +69,109 @@ export default function Organization(){
                                     }}
                                 />
                             </div>
+                            <div style={{ height: "40px",borderTop:"2px solid", borderTopColor:"gray", borderBottom:"2px solid", borderBottomColor:"gray"}}>
+                                <div style={{marginTop:"6px"}}>
+                                    <h1 style={{display:"inline-block", marginLeft:"50px", fontSize:"20px", paddingRight:"50px"}}>Filters</h1>
+                                    <div style={{display:"inline-block"}}>
+                                        <label style={{fontSize:"20px"}}> 2FA <Icon color={'green'} name={'check'} /> </label>
+                                        <input
+                                            type = "checkbox"
+                                            checked={filters["H2FA"]}
+                                            onChange={handleOnChange("H2FA")}
+                                        />
+                                        <label style={{fontSize:"20px", marginLeft: "10px",paddingLeft: "5px",borderLeft:"2px solid"}}> 2FA <Icon color={'red'} name={'x'} /> </label>
+                                        <input
+                                            type = "checkbox"
+                                            checked={filters["N2FA"]}
+                                            onChange={handleOnChange("N2FA")}
+                                        />
+                                        <label style={{fontSize:"20px", marginLeft: "10px",paddingLeft: "5px",borderLeft:"2px solid"}}> Dependabot <Icon color={'green'} name={'check'} /> </label>
+                                        <input
+                                            type = "checkbox"
+                                            checked={filters["NDEP"]}
+                                            onChange={handleOnChange("NDEP")}
+                                        />
+                                        <label style={{fontSize:"20px", marginLeft: "10px",paddingLeft: "5px",borderLeft:"2px solid"}}> Dependabot <Icon color={'red'} name={'x'} /> </label>
+                                        <input
+                                            type = "checkbox"
+                                            checked={filters["HDEP"]}
+                                            onChange={handleOnChange("HDEP")}
+                                        />
+                                        <label style={{fontSize:"20px", marginLeft: "10px",paddingLeft: "5px",borderLeft:"2px solid"}}> Code Scan <Icon color={'green'} name={'check'} /> </label>
+                                        <input
+                                            type = "checkbox"
+                                            checked={filters["NCODE"]}
+                                            onChange={handleOnChange("NCODE")}
+                                        />
+                                        <label style={{fontSize:"20px", marginLeft: "10px",paddingLeft: "5px",borderLeft:"2px solid"}}> Code Scan <Icon color={'red'} name={'x'} /> </label>
+                                        <input
+                                            type = "checkbox"
+                                            checked={filters["HCODE"]}
+                                            onChange={handleOnChange("HCODE")}
+                                        />
+                                        <label style={{fontSize:"20px", marginLeft: "10px",paddingLeft: "5px",borderLeft:"2px solid"}}> Secret Scan <Icon color={'green'} name={'check'} /> </label>
+                                        <input
+                                            type = "checkbox"
+                                            checked={filters["NSEC"]}
+                                            onChange={handleOnChange("NSEC")}
+                                        />
+                                        <label style={{fontSize:"20px", marginLeft: "10px",paddingLeft: "5px",borderLeft:"2px solid"}}> Secret Scan <Icon color={'red'} name={'x'} /> </label>
+                                        <input
+                                            type = "checkbox"
+                                            checked={filters["HSEC"]}
+                                            onChange={handleOnChange("HSEC")}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
                             {orgData.length > 0 ? (
                                 <Card.Group centered>
                                     {orgData.filter((org)=> {
-                                        if (searchTerm == ""){
-                                            return org
-                                        } else if (org.name.toLowerCase().includes(searchTerm.toLowerCase())) {
+                                        const hasFilter = Object.values(filters).includes(true);
+                                        let filtered = true;
+                                        if (hasFilter) {
+                                            if (filters["H2FA"] === true && filters["N2FA"] === false) {
+                                                if (org.two_factor_requirement_enabled === false) {
+                                                    filtered = false
+                                                }
+                                            }
+                                            if (filters["N2FA"] === true && filters["H2FA"] === false) {
+                                                if (org.two_factor_requirement_enabled === true) {
+                                                    filtered = false
+                                                }
+                                            }
+                                            if (filters["HDEP"] === true && filters["NDEP"] === false) {
+                                                if (org.dependabot_alerts_exist === false) {
+                                                    filtered = false
+                                                }
+                                            }
+                                            if (filters["NDEP"] === true && filters["HDEP"] === false) {
+                                                if (org.dependabot_alerts_exist === true) {
+                                                    filtered = false
+                                                }
+                                            }
+                                            if (filters["HCODE"] === true && filters["NCODE"] === false) {
+                                                if (org.code_alerts_exist === false) {
+                                                    filtered = false
+                                                }
+                                            }
+                                            if (filters["NCODE"] === true && filters["HCODE"] === false) {
+                                                if (org.code_alerts_exist === true) {
+                                                    filtered = false
+                                                }
+                                            }
+                                            if (filters["HSEC"] === true && filters["NSEC"] === false) {
+                                                if (org.secret_alerts_exist === false) {
+                                                    filtered = false
+                                                }
+                                            }
+                                            if (filters["NSEC"] === true && filters["HSEC"] === false) {
+                                                if (org.secret_alerts_exist === true) {
+                                                    filtered = false
+                                                }
+                                            } 
+                                        }
+                                        if (org.name.toLowerCase().includes(searchTerm.toLowerCase()) && filtered) {
                                             return org
                                         }
                                     }).map((org, index) => {
