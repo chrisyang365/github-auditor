@@ -30,7 +30,7 @@ export default function FilterDrop(props) {
                         
                         }}
             >
-            Filter
+            Filters
             </button>
             {isOpen &&(
                 <>
