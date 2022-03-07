@@ -72,7 +72,7 @@ export default function Repositories(props){
                     {isLoaded ? (
                         <>
                             <div style={{display:"flex", justifyContent:"center"}}>
-                            <SearchBar setSearchState={setSearchState}/>
+                            <SearchBar filtersLen={filtersLen} setSearchState={setSearchState}/>
                             <FilterDrop filtersLen={filtersLen} filters={filters} setFilter={setFilter}/>
                             </div>
                             {repoData.length > 0 ? (
