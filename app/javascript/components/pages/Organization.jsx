@@ -4,8 +4,9 @@ import { Card, Dimmer, Header, Icon, Image, Loader, Label, Popup } from 'semanti
 import axios from 'axios';
 import { AuthContext } from "../App";
 import NavBar from "../layout/NavBar";
+import SearchBar from "../layout/SearchBar";
+import FilterDrop from "../layout/FilterDrop";
 import plusminus from "../../../assets/images/plusminus.png";
-import './Organization.css';
 
 export default function Organization(){
 
@@ -15,6 +16,8 @@ export default function Organization(){
     const [redirect, setRedirect] = useState(false);
     const [clickedOrg, setClickedOrg] = useState(null);
     const [searchTerm, setSearchState] = useState("");
+    const [filters, setFilter] = useState({'H2FA':false,'N2FA':false,'HDEP':false,'NDEP':false,'HCODE':false,'NCODE':false,'HSEC':false,'NSEC':false});
+    const [filtersLen, setFilterLen] = useState(8);
     const location = useLocation();
 
     useEffect(() => {
@@ -47,27 +50,58 @@ export default function Organization(){
                 <>
                 <NavBar />
                     {isLoaded ? (
-                        <>  
-                            <div style={{display:"flex", justifyContent:"center"}}>
-                                <input 
-                                    type = "text" 
-                                    style={{marginBottom:"15px",
-                                        height:"50px",
-                                        width: "300px",
-                                        borderRadius: "5px",
-                                        paddingLeft: "10px",
-                                        fontSize: "20px"}} 
-                                    placeholder="Search for org..." 
-                                    onChange={event => {setSearchState(event.target.value);
-                                    }}
-                                />
+                        <>  <div style={{display:"flex", justifyContent:"center"}}>
+                            <SearchBar setSearchState={setSearchState}/>
+                            <FilterDrop filtersLen={filtersLen} filters={filters} setFilter={setFilter}/>
                             </div>
                             {orgData.length > 0 ? (
                                 <Card.Group centered>
                                     {orgData.filter((org)=> {
-                                        if (searchTerm == ""){
-                                            return org
-                                        } else if (org.name.toLowerCase().includes(searchTerm.toLowerCase())) {
+                                        const hasFilter = Object.values(filters).includes(true);
+                                        let filtered = true;
+                                        if (hasFilter) {
+                                            if (filters["H2FA"] === true && filters["N2FA"] === false) {
+                                                if (org.two_factor_requirement_enabled === false) {
+                                                    filtered = false
+                                                }
+                                            }
+                                            if (filters["N2FA"] === true && filters["H2FA"] === false) {
+                                                if (org.two_factor_requirement_enabled === true) {
+                                                    filtered = false
+                                                }
+                                            }
+                                            if (filters["HDEP"] === true && filters["NDEP"] === false) {
+                                                if (org.dependabot_alerts_exist === false) {
+                                                    filtered = false
+                                                }
+                                            }
+                                            if (filters["NDEP"] === true && filters["HDEP"] === false) {
+                                                if (org.dependabot_alerts_exist === true) {
+                                                    filtered = false
+                                                }
+                                            }
+                                            if (filters["HCODE"] === true && filters["NCODE"] === false) {
+                                                if (org.code_alerts_exist === false) {
+                                                    filtered = false
+                                                }
+                                            }
+                                            if (filters["NCODE"] === true && filters["HCODE"] === false) {
+                                                if (org.code_alerts_exist === true) {
+                                                    filtered = false
+                                                }
+                                            }
+                                            if (filters["HSEC"] === true && filters["NSEC"] === false) {
+                                                if (org.secret_alerts_exist === false) {
+                                                    filtered = false
+                                                }
+                                            }
+                                            if (filters["NSEC"] === true && filters["HSEC"] === false) {
+                                                if (org.secret_alerts_exist === true) {
+                                                    filtered = false
+                                                }
+                                            } 
+                                        }
+                                        if (org.name.toLowerCase().includes(searchTerm.toLowerCase()) && filtered) {
                                             return org
                                         }
                                     }).map((org, index) => {
