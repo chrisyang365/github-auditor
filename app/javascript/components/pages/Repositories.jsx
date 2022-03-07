@@ -4,6 +4,8 @@ import { Button, Card, Dimmer, Header, Icon, Label, Loader } from 'semantic-ui-r
 import axios from 'axios';
 import { AuthContext } from "../App";
 import NavBar from "../layout/NavBar"
+import SearchBar from "../layout/SearchBar";
+import FilterDrop from "../layout/FilterDrop";
 
 export default function Repositories(props){
 
@@ -12,6 +14,9 @@ export default function Repositories(props){
     const [repoData, setRepoData] = useState([]);
     const [redirect, setRedirect] = useState(false);
     const [clickedRepo, setClickedRepo] = useState(null);
+    const [searchTerm, setSearchState] = useState("");
+    const [filters, setFilter] = useState({'H2FA':false,'N2FA':false,'HDEP':false,'NDEP':false,'HCODE':false,'NCODE':false,'HSEC':false,'NSEC':false});
+    const [filtersLen, setFilterLen] = useState(6);
     const location = useLocation();
 
     useEffect(() => {
@@ -66,9 +71,51 @@ export default function Repositories(props){
                 <NavBar />
                     {isLoaded ? (
                         <>
+                            <div style={{display:"flex", justifyContent:"center"}}>
+                            <SearchBar setSearchState={setSearchState}/>
+                            <FilterDrop filtersLen={filtersLen} filters={filters} setFilter={setFilter}/>
+                            </div>
                             {repoData.length > 0 ? (
                                 <Card.Group centered>
-                                    {repoData
+                                    {repoData.filter((repo)=> {
+                                        const hasFilter = Object.values(filters).includes(true);
+                                        let filtered = true;
+                                        if (hasFilter) {
+                                            if (filters["HDEP"] === true && filters["NDEP"] === false) {
+                                                if (repo.dependabot_alerts.length <= 0) {
+                                                    filtered = false
+                                                }
+                                            }
+                                            if (filters["NDEP"] === true && filters["HDEP"] === false) {
+                                                if (repo.dependabot_alerts.length > 0) {
+                                                    filtered = false
+                                                }
+                                            }
+                                            if (filters["HCODE"] === true && filters["NCODE"] === false) {
+                                                if (repo.code_alerts.length <= 0) {
+                                                    filtered = false
+                                                }
+                                            }
+                                            if (filters["NCODE"] === true && filters["HCODE"] === false) {
+                                                if (repo.code_alerts.length > 0) {
+                                                    filtered = false
+                                                }
+                                            }
+                                            if (filters["HSEC"] === true && filters["NSEC"] === false) {
+                                                if (repo.secret_alerts.length <= 0) {
+                                                    filtered = false
+                                                }
+                                            }
+                                            if (filters["NSEC"] === true && filters["HSEC"] === false) {
+                                                if (repo.secret_alerts.length > 0) {
+                                                    filtered = false
+                                                }
+                                            } 
+                                        }
+                                        if (repo.name.toLowerCase().includes(searchTerm.toLowerCase()) && filtered) {
+                                            return repo
+                                        }
+                                    })
                                     .sort((a,b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : -1)
                                     .map((repo) => {
                                         let repoDisplayName = repo.name.split('/')[1]

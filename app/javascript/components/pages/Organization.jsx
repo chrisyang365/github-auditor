@@ -4,8 +4,9 @@ import { Card, Dimmer, Header, Icon, Image, Loader, Label, Popup } from 'semanti
 import axios from 'axios';
 import { AuthContext } from "../App";
 import NavBar from "../layout/NavBar";
+import SearchBar from "../layout/SearchBar";
+import FilterDrop from "../layout/FilterDrop";
 import plusminus from "../../../assets/images/plusminus.png";
-import './Organization.css';
 
 export default function Organization(){
 
@@ -16,6 +17,7 @@ export default function Organization(){
     const [clickedOrg, setClickedOrg] = useState(null);
     const [searchTerm, setSearchState] = useState("");
     const [filters, setFilter] = useState({'H2FA':false,'N2FA':false,'HDEP':false,'NDEP':false,'HCODE':false,'NCODE':false,'HSEC':false,'NSEC':false});
+    const [filtersLen, setFilterLen] = useState(8);
     const location = useLocation();
 
     useEffect(() => {
@@ -33,12 +35,6 @@ export default function Organization(){
         }
     }, [isLoaded, orgData])
 
-    const handleOnChange = (filter) => (event) => {
-        setFilter((prev) => ({
-          ...prev,
-          [filter]: event.target.checked,
-        }));
-      };
     return(
         <div>
             {!location.pathname.includes('orgs') ? (
@@ -54,75 +50,9 @@ export default function Organization(){
                 <>
                 <NavBar />
                     {isLoaded ? (
-                        <>  
-                            <div style={{display:"flex", justifyContent:"center"}}>
-                                <input 
-                                    type = "text" 
-                                    style={{marginBottom:"15px",
-                                        height:"50px",
-                                        width: "300px",
-                                        borderRadius: "5px",
-                                        paddingLeft: "10px",
-                                        fontSize: "20px"}} 
-                                    placeholder="Search for org..." 
-                                    onChange={event => {setSearchState(event.target.value);
-                                    }}
-                                />
-                            </div>
-                            <div style={{ height: "40px",borderTop:"2px solid", borderTopColor:"gray", borderBottom:"2px solid", borderBottomColor:"gray"}}>
-                                <div style={{marginTop:"6px"}}>
-                                    <h1 style={{display:"inline-block", marginLeft:"50px", fontSize:"20px", paddingRight:"50px"}}>Filters</h1>
-                                    <div style={{display:"inline-block"}}>
-                                        <label style={{fontSize:"20px"}}> 2FA <Icon color={'green'} name={'check'} /> </label>
-                                        <input
-                                            type = "checkbox"
-                                            checked={filters["H2FA"]}
-                                            onChange={handleOnChange("H2FA")}
-                                        />
-                                        <label style={{fontSize:"20px", marginLeft: "10px",paddingLeft: "5px",borderLeft:"2px solid"}}> 2FA <Icon color={'red'} name={'x'} /> </label>
-                                        <input
-                                            type = "checkbox"
-                                            checked={filters["N2FA"]}
-                                            onChange={handleOnChange("N2FA")}
-                                        />
-                                        <label style={{fontSize:"20px", marginLeft: "10px",paddingLeft: "5px",borderLeft:"2px solid"}}> Dependabot <Icon color={'green'} name={'check'} /> </label>
-                                        <input
-                                            type = "checkbox"
-                                            checked={filters["NDEP"]}
-                                            onChange={handleOnChange("NDEP")}
-                                        />
-                                        <label style={{fontSize:"20px", marginLeft: "10px",paddingLeft: "5px",borderLeft:"2px solid"}}> Dependabot <Icon color={'red'} name={'x'} /> </label>
-                                        <input
-                                            type = "checkbox"
-                                            checked={filters["HDEP"]}
-                                            onChange={handleOnChange("HDEP")}
-                                        />
-                                        <label style={{fontSize:"20px", marginLeft: "10px",paddingLeft: "5px",borderLeft:"2px solid"}}> Code Scan <Icon color={'green'} name={'check'} /> </label>
-                                        <input
-                                            type = "checkbox"
-                                            checked={filters["NCODE"]}
-                                            onChange={handleOnChange("NCODE")}
-                                        />
-                                        <label style={{fontSize:"20px", marginLeft: "10px",paddingLeft: "5px",borderLeft:"2px solid"}}> Code Scan <Icon color={'red'} name={'x'} /> </label>
-                                        <input
-                                            type = "checkbox"
-                                            checked={filters["HCODE"]}
-                                            onChange={handleOnChange("HCODE")}
-                                        />
-                                        <label style={{fontSize:"20px", marginLeft: "10px",paddingLeft: "5px",borderLeft:"2px solid"}}> Secret Scan <Icon color={'green'} name={'check'} /> </label>
-                                        <input
-                                            type = "checkbox"
-                                            checked={filters["NSEC"]}
-                                            onChange={handleOnChange("NSEC")}
-                                        />
-                                        <label style={{fontSize:"20px", marginLeft: "10px",paddingLeft: "5px",borderLeft:"2px solid"}}> Secret Scan <Icon color={'red'} name={'x'} /> </label>
-                                        <input
-                                            type = "checkbox"
-                                            checked={filters["HSEC"]}
-                                            onChange={handleOnChange("HSEC")}
-                                        />
-                                    </div>
-                                </div>
+                        <>  <div style={{display:"flex", justifyContent:"center"}}>
+                            <SearchBar setSearchState={setSearchState}/>
+                            <FilterDrop filtersLen={filtersLen} filters={filters} setFilter={setFilter}/>
                             </div>
                             {orgData.length > 0 ? (
                                 <Card.Group centered>
